@@ -248,6 +248,10 @@ table a{
     display: block  ;
 }
 
+thead {
+    background-color: #f0f0f0;
+}
+
 .side-bar .option-group {
     background-color: rgb(9, 53, 66);
 }
