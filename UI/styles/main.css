@@ -225,7 +225,7 @@ thead tr{
     color:#19aa8d;
 }
 
-.side-bar.active a{
+.side-bar a.active{
     background-color:#19aa8d;
 }
 
@@ -244,13 +244,14 @@ thead tr{
     opacity: .8;
 }
 
+table a{
+    display: block  ;
+}
+
 .side-bar .option-group {
     background-color: rgb(9, 53, 66);
 }
 .hr-sidebar{
     color:#fff;
     border: 1px solid #fff;
-}
-.wrapper .fa {
-    margin-right: 20px;
 }
