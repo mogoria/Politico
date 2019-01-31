@@ -128,3 +128,6 @@ input[type=submit]{
 .spacer-10{
     margin-bottom: 10px;
 }
+.hidden{
+    display: none;
+}
