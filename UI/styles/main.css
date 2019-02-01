@@ -259,3 +259,15 @@ thead {
     color:#fff;
     border: 1px solid #fff;
 }
+.politician-wrapper {
+    margin-bottom: 30px;
+}
+
+.voting-form div.btn-submit {
+    width: 60%;
+    height: 33px;
+    font-weight: bold; 
+    margin: auto;
+    border-radius: 3px;
+
+}

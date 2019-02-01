@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vote</title>
+        <!--font-awesome-->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <link type='text/css' rel='stylesheet' href='../styles/main.css' />
+    </head>
+    <body>
+        <div class = 'wrapper'>
+            <div class="side-bar">
+                <img id='logo' src='../images/logo2.png' />
+                <hr class="hr-sidebar">
+                <a href="dashboard.html"><i class = "fa fa-home"></i>Dashboard</a>
+                <a href="political_parties.html"><i class="fa fa-sitemap"></i>Political Parties</a>
+                <div class="dash-label">Politicians</div>
+                <div class="option-group">
+                    <a href="politicians.html"><i class = "fa fa-users"></i>Politicians List</a>
+                    <a href="express_interest.html"><i class = "fa fa-hand-paper"></i>Express Interest</a>
+                </div> 
+                <div class="dash-label">Vote</div>
+                <div class="option-group">
+                    <a href="vote.html"><i class = "fa fa-vote-yea"></i>Cast Vote</a>
+                    <a href="voting_history.html"><i class = "fa fa-history"></i>Vote History</a>
+                </div>
+                <div class="dash-label">Settings</div>
+                <div class="option-group">
+                    <a href="#"><i class = "fa fa-user-alt"></i>Profile</a>
+                    <a href="#"><i class = "fa fa-sign-out-alt"></i>Logout</a>
+                </div>
+                
+
+            </div>
+            <div class = "main">
+                <div class="text-center">
+                    <h2>
+                        Vote
+                    </h2>
+                    <p>
+                        Here is your chance to make an impact
+                    </p>
+                    <p>
+                        Vote for a politician for an office of your choice 
+                    </p>
+                </div>
+                <div class = "container">
+                    <form action = "" method="POST" class="voting-form">
+                        <div class = "politician-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th colspan="3">President</th></tr>
+                                    <tr><th>Candidate</th><th>Party</th><td>Choice</td></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Barrack</td><td>NSA</td><td><input type="radio" name="user-vote[president]" value="Barrack"></td></tr>
+                                    <tr><td>John Doe</td><td>Change</td><td><input type="radio" name="user-vote[president]" value="Barrack"></td></tr>
+                                    <tr><td>Jane Rose</td><td>Millenials</td><td><input type="radio" name="user-vote[president]" value="Barrack"></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class = "politician-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th colspan="3">Governor</th></tr>
+                                    <tr><th>Candidate</th><th>Party</th><td>Choice</td></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>William Reece</td><td>Millenials</td><td><input type="radio" name="user-vote[governor]" value="Barrack"></td></tr>
+                                    <tr><td>Mike Holla</td><td>Independent</td><td><input type="radio" name="user-vote[governor]" value="Barrack"></td></tr>
+                                    <tr><td>Victor Zaas</td><td>Change</td><td><input type="radio" name="user-vote[governor]" value="Barrack"></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class = "politician-wrapper">
+                            <table>
+                                <thead>
+                                    <tr><th colspan="3">Counselor</th></tr>
+                                    <tr><th>Candidate</th><th>Party</th><td>Choice</td></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Barrack</td><td>NSA</td><td><input type="radio" name="user-vote[counselor]" value="Barrack"></td></tr>
+                                    <tr><td>John Doe</td><td>Change</td><td><input type="radio" name="user-vote[counselor]" value="Barrack"></td></tr>
+                                    <tr><td>Jane Rose</td><td>Millenials</td><td><input type="radio" name="user-vote[counselor]" value="Barrack"></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- <input type="submit" value="cast vote" class="btn bg-success form-control"/> -->
+                        
+                        <div class="btn btn-submit text-center bg-success" style="margin:auto;width:60%;">cast vote</div>
+                    </form>
+                </div>                                
+            </div>
+        </div>
+        
+        <script type="javascript" src="../scripts/main.js">
+
+        </script>
+    </body>
+</html> 
