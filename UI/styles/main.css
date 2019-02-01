@@ -63,7 +63,7 @@ a:hover{
     margin-bottom: 20px;
 }
 
-.form-group > label, .form-group > input{
+.form-group > label, .form-group > input, .form-group > select{
     display: block;
     margin-bottom: 5px;
 }
@@ -98,14 +98,14 @@ a:hover{
     margin: 10px -20px;
 }
 
-input.form-control {
+input.form-control, select.form-control {
     border:none;
     border-radius: 3px;
     border: 1px solid #e1e1e1;
     height: 30px;
 }
 
-input.form-control:focus{
+input.form-control:focus, select.form-control:focus{
     border-color: #2993da;
     box-shadow: 0 0 3px #2993da;
 }
