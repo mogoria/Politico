@@ -111,3 +111,15 @@ function submitSignin(e) {
 
 	return false;
 }
+
+function submitAdminUser(e) {
+  e.preventDefault();
+
+  modal = new Modal(document.getElementById('admin-signup-modal'));
+
+	closeOnWindowClick(modal);
+	closeOnButtonClick(modal);
+	modal.show();
+
+	return false;
+}
