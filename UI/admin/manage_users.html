@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Admin Dashboard</title>
+        <!--font-awesome-->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <link type='text/css' rel='stylesheet' href='../styles/main.css' />
+    </head>
+    <body>
+        <div class = 'wrapper'>
+            <div class="side-bar">
+                <img id='logo' src='../images/logo2.png' />
+                <hr class="hr-sidebar">
+                <a href="dashboard.html"><i class = "fa fa-home"></i>Dashboard</a>
+                <div class="dash-label">Political Parties</div>
+                <div class="option-group">
+                    <a href="add_party.html"><i class = "fa fa-plus-circle"></i>Add political parties</a>
+                    <a href="political_parties.html"><i class = "fa fa-pencil-alt"></i>Edit political parties</a>
+                </div>
+                <a href="political_office.html"><i class="fa fa-briefcase"></i>Political Office</a>                <a href="#"><i class="fa fa-user-tie"></i>Politicians</a>
+                <div class="dash-label">Users</div>
+                <div class="option-group">
+                    <a href="add_admin.html"><i class = "fa fa-plus-circle"></i>Add Admin</a>
+                    <a href="manage_users.html"><i class = "fa fa-pencil-alt"></i>Manage Users</a>
+                </div>
+                <div class="dash-label">Settings</div>
+                <div class="option-group">
+                    <a href="#"><i class = "fa fa-user-alt"></i>Profile</a>
+                    <a href="../index.html"><i class = "fa fa-sign-out-alt"></i>Logout</a>
+                </div>              
+            </div>
+            <div class = "main">
+                <div class="text-center">
+                    <h2>
+                        View and manage Users 
+                    </h2>
+                    <p>edit a user's details </p>
+                </div>
+                <div class="container">                        
+                    <table>
+                        <thead>
+                            <tr><th>Name</th><th>Type</th><th>Email</th><th>ID NUMBER</th><th>Options</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>John Doe</td><td>Admin</td><td>jd@email.com</td><td>123456</td><td><a><i class="fa fa-pencil-alt"></i>EDIT</a><a class="danger"><i class="fa fa-trash-alt"></i>DELETE</a></td></tr>
+                            <tr><td>Yxng Bane</td><td>Voter</td><td>bane@email.com</td><td>323456</td><td><a><i class="fa fa-pencil-alt"></i>EDIT</a><a class="danger"><i class="fa fa-trash-alt"></i>DELETE</a></td></tr>
+                               <tr><td>GRM</td><td>Admin</td><td>grm@email.com</td><td>223456</td><td><a><i class="fa fa-pencil-alt"></i>EDIT</a><a class="danger"><i class="fa fa-trash-alt"></i>DELETE</a></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                                        
+            </div>
+        </div>
+        
+        <script src="../scripts/main.js">
+        </script>
+    </body>
+</html> 
