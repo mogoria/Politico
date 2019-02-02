@@ -1,62 +1,113 @@
-// console.log(document.links);
-// var active = 0;
-// for (var i = 0; i < document.links.length; i++) {
-//     console.log("document url: " + document.URL);
-//     console.log("link url: " + document.links[i].href);
-//     if (document.links[i].href === document.URL) {
-//         active = i;
-//     }
-// }
-// document.links[active].className = 'active';
+class ToggleDisplay {
+	constructor(element) {
+		this.element = element;
+	}
 
-var interest_modal = document.getElementById('interest-modal');
+	show() {
+		this.element.style.display = 'block';
+	}
 
-var close_interest_modal = document.getElementsByClassName("close")[0];
+	hide() {
+		this.element.style.display = 'none';
+  }
+  
+  visible() {
+    return this.element.style.display !== "none";
+  }
+}
 
-close_interest_modal.onclick = function(){closeInterestModal();}
+class Modal extends ToggleDisplay {
+	constructor(modal) {
+		super(modal);
+		this.message = 'Success!';
+	}
 
-window.onclick = function(event) {
-    if(event.target==interest_modal){
-        closeInterestModal();
-    }
+	setMessage(message) {
+		this.message = message;
+		this.element.getElementsByClassName('modal-message')[0].innerHTML = this.message;
+	}
+}
+
+function closeOnWindowClick(modal) {
+	window.onclick = function(event) {
+		if (event.target == modal.element) {
+			modal.hide();
+		}
+	};
+}
+
+function closeOnButtonClick(modal) {
+	var btnClose = document.getElementsByClassName('close-modal')[0];
+	if (btnClose)
+		btnClose.onclick = function() {
+			modal.hide();
+		};
+}
+
+function submitLogin(e) {
+	e.preventDefault();
+
+	selectAccountModal = new Modal(document.getElementById('accounts-modal'));
+
+	closeOnWindowClick(selectAccountModal);
+	closeOnButtonClick(selectAccountModal);
+	selectAccountModal.show();
+
+	return false;
 }
 
 function submitInterestForm(e) {
-    e.preventDefault();
-    var formElements = document.getElementById("interest-form").elements;
+	e.preventDefault();
+	formElements = document.getElementById('interest-form').elements;
 
-    var politicalParty = formElements.namedItem('political-party').value;
-    var politicalOffice = formElements.namedItem("political-office").value;
+	politicalParty = formElements.namedItem('political-party').value;
+	politicalOffice = formElements.namedItem('political-office').value;
 
-    if(!politicalParty) {
-        showInterestModal("Please select a value for political party");
+	modal = new Modal(document.getElementById('interest-modal'));
+	closeOnWindowClick(modal);
+	closeOnButtonClick(modal);
 
-    } else if(!politicalOffice) {
+	if (!politicalParty) {
+		modal.setMessage('Please select a value for political party');
+	} else if (!politicalOffice) {
+		modal.setMessage('Please select a value for political office');
+	} else {
+		modal.setMessage('Application Successful');
+	}
 
-        showInterestModal("Please select a value for political office");
-
-    } else {
-
-        showInterestModal("Application Successful");
-
-    }
-    
-    return false;
+	modal.show();
+	return false;
 }
 
-function closeInterestModal(){
-    interest_modal.style.display = "none";
+function submitEmail(e) {
+  e.preventDefault();
+  
+  emailContainer = document.getElementById("email-input");
+  codeContainer = document.getElementById("code-input");
+
+  emailDis = new ToggleDisplay(emailContainer);
+  codeDis = new ToggleDisplay(codeContainer);
+
+  if(emailDis.visible()) {
+    emailDis.hide()
+    codeDis.show()
+  } else {
+    modal = new Modal(document.getElementById('pword-modal'));
+
+    closeOnWindowClick(modal);
+    closeOnButtonClick(modal);
+    modal.show();
+  } 
+  return false;
 }
+function submitSignin(e) {
+  e.preventDefault();
 
-function showInterestModal(message){
-    var modal_message = interest_modal.getElementsByClassName('modal-message')[0];
-    var btn_close = document.getElementById("cls-interest");
+	modal = new Modal(document.getElementById('signin-modal'));
 
-    if(modal_message) {
-        modal_message.innerHTML = message;
-    }
+	closeOnWindowClick(modal);
+	closeOnButtonClick(modal);
+	modal.show();
 
-    interest_modal.style.display = "block";
-    btn_close.onclick = function(){closeInterestModal();}
+	return false;
 }
-
