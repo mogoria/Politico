@@ -6,13 +6,26 @@
             <link href="styles/main.css" type="text/css" rel="stylesheet"/>
         </head>
         <body>
-            <div class = "wrapper">
+            <!--Modal to display -->
+            <div id="signin-modal" class="modal">            
+                <div class="modal-container">
+                    <div class = "modal-header">
+                    </div>
+                    <div class = "modal-body text-center">
+                        <p class="modal-message">
+                            Account Created successfully!
+                        </p>
+                        <a href="index.html" class='close-modal btn bg-success center'>OK</a>
+                    </div>             
+                </div>
+            </div>
+            <div class = "wrapper gh">
                 <div class="form">
                     <img src = 'images/logo.png' class='form-logo'/>
                     <h2>Sign Up</h2>
                     <p class = "description">Please fill in this form to create an account!</p>
                     <hr>
-                    <form method="post" action="" id = "signup-form">
+                    <form method="post" action="" id = "signup-form" onsubmit="return submitSignin(event)">
                         <div class = "form-group">
                             <label>Name</label>
                             <input name ="name" type = "text" class="form-control" />

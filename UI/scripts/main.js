@@ -100,3 +100,14 @@ function submitEmail(e) {
   } 
   return false;
 }
+function submitSignin(e) {
+  e.preventDefault();
+
+	modal = new Modal(document.getElementById('signin-modal'));
+
+	closeOnWindowClick(modal);
+	closeOnButtonClick(modal);
+	modal.show();
+
+	return false;
+}
