@@ -278,7 +278,7 @@ thead {
     width: 100%;
     height: 100%;
     display: none;
-    background-color: #112d3f73;
+    background-color: #112d3fb7;
     position: fixed;
     z-index: 10000;
 }
@@ -316,5 +316,29 @@ thead {
     padding: 5px;
 }
 .modal a.btn:hover{
+    text-decoration: none;
+}
+.icon-collection .icon{
+    font-size: 30px;
+    height: 50px;
+    width: 50px;
+}
+.gr {
+    display: flex;
+    margin: auto;
+    padding: 10px 0;
+    width: 60%;
+}
+
+.gr .gr-item{
+    margin: auto;
+    background-color: rgb(5, 42, 53);;
+    color: #eee;
+    padding: 10px;
+    border-radius: 3px;
+
+}
+
+a.gr-item:hover{
     text-decoration: none;
 }

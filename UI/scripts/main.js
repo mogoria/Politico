@@ -1,62 +1,130 @@
-// console.log(document.links);
-// var active = 0;
-// for (var i = 0; i < document.links.length; i++) {
-//     console.log("document url: " + document.URL);
-//     console.log("link url: " + document.links[i].href);
-//     if (document.links[i].href === document.URL) {
-//         active = i;
+class ToggleDisplay {
+  constructor(element) {
+    this.element = element;
+  }
+
+  show() {
+    this.element.style.display = "block";
+  }
+
+  hide() {
+    this.element.style.display = "none";
+  }
+
+}
+
+class Modal extends ToggleDisplay {
+  constructor(modal) {
+    super(modal);
+    this.message = "Success!";
+  }
+
+  setMessage(message) {
+    this.message = message;
+    this.element.getElementsByClassName('modal-message')[0].innerHTML = this.message;
+  }
+}
+
+// let interest_modal = document.getElementById('interest-modal');
+
+// let close_interest_modal = document.getElementsByClassName("close")[0];
+
+// close_interest_modal.onclick = function(){closeInterestModal();}
+
+// window.onclick = function(event) {
+//     if(event.target==interest_modal){
+//         closeInterestModal();
 //     }
 // }
-// document.links[active].className = 'active';
 
-var interest_modal = document.getElementById('interest-modal');
+// function submitInterestForm(e) {
+//     e.preventDefault();
+//     let formElements = document.getElementById("interest-form").elements;
 
-var close_interest_modal = document.getElementsByClassName("close")[0];
+//     let politicalParty = formElements.namedItem('political-party').value;
+//     let politicalOffice = formElements.namedItem("political-office").value;
 
-close_interest_modal.onclick = function(){closeInterestModal();}
+//     if(!politicalParty) {
+//         showInterestModal("Please select a value for political party");
 
-window.onclick = function(event) {
-    if(event.target==interest_modal){
-        closeInterestModal();
-    }
+//     } else if(!politicalOffice) {
+
+//         showInterestModal("Please select a value for political office");
+
+//     } else {
+
+//         showInterestModal("Application Successful");
+
+//     }
+
+//     return false;
+// }
+
+// function closeInterestModal(){
+//     interest_modal.style.display = "none";
+// }
+
+// function showInterestModal(message){
+//     var modal_message = interest_modal.getElementsByClassName('modal-message')[0];
+//     var btn_close = document.getElementById("cls-interest");
+
+//     if(modal_message) {
+//         modal_message.innerHTML = message;
+//     }
+
+//     interest_modal.style.display = "block";
+//     btn_close.onclick = function(){closeInterestModal();}
+// }
+function closeOnWindowClick(modal){
+  window.onclick = function(event) {
+      if(event.target==modal.element){
+          modal.hide();
+      }
+  }
+}
+
+function closeOnButtonClick(modal){
+  var btnClose = document.getElementsByClassName("close-modal")[0];
+  if(btnClose) btnClose.onclick = function(){modal.hide();}
+}
+
+function submitLogin(e) {
+  e.preventDefault();
+
+  selectAccountModal = new Modal(document.getElementById("accounts-modal"));
+  
+  closeOnWindowClick(selectAccountModal);
+  closeOnButtonClick(selectAccountModal);
+  selectAccountModal.show();
+
+  return false;
 }
 
 function submitInterestForm(e) {
     e.preventDefault();
-    var formElements = document.getElementById("interest-form").elements;
+    formElements = document.getElementById("interest-form").elements;
 
-    var politicalParty = formElements.namedItem('political-party').value;
-    var politicalOffice = formElements.namedItem("political-office").value;
+    politicalParty = formElements.namedItem('political-party').value;
+    politicalOffice = formElements.namedItem("political-office").value;
+
+    modal = new Modal(document.getElementById('interest-modal'));
+    closeOnWindowClick(modal);
+    closeOnButtonClick(modal);
 
     if(!politicalParty) {
-        showInterestModal("Please select a value for political party");
+
+      modal.setMessage("Please select a value for political party");
 
     } else if(!politicalOffice) {
 
-        showInterestModal("Please select a value for political office");
+      modal.setMessage("Please select a value for political office");
 
     } else {
 
-        showInterestModal("Application Successful");
+      modal.setMessage("Application Successful");
 
     }
-    
+
+    modal.show();
     return false;
 }
-
-function closeInterestModal(){
-    interest_modal.style.display = "none";
-}
-
-function showInterestModal(message){
-    var modal_message = interest_modal.getElementsByClassName('modal-message')[0];
-    var btn_close = document.getElementById("cls-interest");
-
-    if(modal_message) {
-        modal_message.innerHTML = message;
-    }
-
-    interest_modal.style.display = "block";
-    btn_close.onclick = function(){closeInterestModal();}
-}
-
