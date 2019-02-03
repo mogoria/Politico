@@ -9,11 +9,11 @@ class ToggleDisplay {
 
 	hide() {
 		this.element.style.display = 'none';
-  }
-  
-  visible() {
-    return this.element.style.display !== "none";
-  }
+	}
+
+	visible() {
+		return this.element.style.display !== 'none';
+	}
 }
 
 class Modal extends ToggleDisplay {
@@ -28,25 +28,25 @@ class Modal extends ToggleDisplay {
 	}
 }
 
-class Validator{
+class Validator {
 	constructor(formField, validators) {
 		this.formField = formField;
 		this.value = formField.value.trim();
-		this.errorMessage = "";
+		this.errorMessage = '';
 
 		//set the second label as the error label
-		this.errorLabel = formField.parentNode.getElementsByTagName("label")[1];
+		this.errorLabel = formField.parentNode.getElementsByTagName('label')[1];
 		this.validators = validators;
 	}
 
-	hasError(){
-		return this.errorMessage!="";
+	hasError() {
+		return this.errorMessage != '';
 	}
 
-	displayError(){
-		if(this.hasError()) {
-			this.formField.classList.add("has-error");
-			if(this.errorLabel) {
+	displayError() {
+		if (this.hasError()) {
+			this.formField.classList.add('has-error');
+			if (this.errorLabel) {
 				this.errorLabel.innerHTML = this.errorMessage;
 				this.focus();
 			}
@@ -57,46 +57,97 @@ class Validator{
 		this.errorMessage = message;
 	}
 
-	resetError(){
-		this.setErrorMessage("");
-		this.errorLabel.innerHTML = "";
+	resetError() {
+		this.setErrorMessage('');
+		this.errorLabel.innerHTML = '';
 		this.formField.classList.remove('has-error');
 	}
 
-	checkNull(){
-		return this.value == "";
+	checkNull() {
+		return this.value == '';
 	}
 
-	focus(formfield){
+	focus(formfield) {
 		this.formField.focus();
 	}
 
-	checkLength(minLength){
+	checkLength(minLength) {
 		return this.value.length > minLength;
 	}
 
-	validate(){
+	fixedLength(length) {
+		return this.value.length == length;
+	}
+
+	checkRegex(regex) {	
+		return regex.test(this.value);
+	}
+
+	isInt() {
+		return !isNaN(parseInt(this.value));
+	}
+
+	validate() {
 		//reset error
 		this.resetError();
-		for(var key in validators) {
-			switch(key) {
-				case "checkNull":
-					if(this.checkNull()) {
+		for (var key in validators) {
+			switch (key) {
+				case 'isInt':
+					if(!this.isInt()) {
 						this.setErrorMessage(validators[key]);
 					}
 					break;
-				case "minLength":
-					if(!this.checkLength(parseInt(validators[key]["length"],10))) {
-						this.setErrorMessage(validators[key]["message"])
+				case 'checkNull':
+					if (this.checkNull()) {
+						this.setErrorMessage(validators[key]);
+					}
+					break;
+				case 'minLength':
+					if (!this.checkLength(parseInt(validators[key]['length'], 10))) {
+						this.setErrorMessage(validators[key]['message']);
+					}
+					break;
+				case 'fixedLength':
+					if (!this.fixedLength(parseInt(validators[key]['length'], 10))) {
+						this.setErrorMessage(validators[key]['message']);
+					}
+					break;
+				case 'checkRegex':
+					if (!this.checkRegex(validators[key]['regex'])) {
+						this.setErrorMessage(validators[key]['message']);
+					}
+					break;
+				case 'equal':
+					if(this.value !== validators[key]['value']) {
+							this.setErrorMessage(validators[key]['message']);
 					}
 					break;
 			}
-			if(this.hasError()) {
+			if (this.hasError()) {
 				return false;
-			} 
+			}
 		}
-		return true
+		return true;
 	}
+}
+
+function fieldsValidated(formElements, formFields) {
+	let validated = true;
+	for (obj in formFields) {
+		if (validated) {
+			for (formField in formFields[obj]) {
+				validators = formFields[obj][formField];
+				validator = new Validator(formElements.namedItem(formField), validators);
+
+				if (!validator.validate()) {
+					validated = false;
+					validator.displayError();
+					return false;
+				}
+			}
+		}
+	}
+	return true;
 }
 
 function closeOnWindowClick(modal) {
@@ -118,38 +169,30 @@ function closeOnButtonClick(modal) {
 function submitLogin(e) {
 	e.preventDefault();
 
-	validated = true;
 	formElements = document.getElementById('login-form').elements;
 
 	formFieldsToValidate = [
-		{"email":{"checkNull":"Email cannot be blank"}},
-		{"password":{"checkNull":"Password cannot be blank"}}
-	];
-
-	for(obj in formFieldsToValidate) {
-		if(validated) {
-			for(formField in formFieldsToValidate[obj]){
-				validators = formFieldsToValidate[obj][formField];
-				validator = new Validator(formElements.namedItem(formField),validators);
-	
-				if(!validator.validate()) {
-					validated = false;
-					validator.displayError();
-					break;
-				}
+		{
+			email: {
+				checkNull: 'Please enter your email'
+			}
+		},
+		{
+			password: {
+				checkNull: 'Please enter your password'
 			}
 		}
-	}
-	
-	if(validated) {
-		
+	];
+
+	let validated = fieldsValidated(formElements, formFieldsToValidate);
+
+	if (validated) {
 		selectAccountModal = new Modal(document.getElementById('accounts-modal'));
 
 		closeOnWindowClick(selectAccountModal);
 		closeOnButtonClick(selectAccountModal);
 		selectAccountModal.show();
 	}
-
 
 	return false;
 }
@@ -178,42 +221,96 @@ function submitInterestForm(e) {
 }
 
 function submitEmail(e) {
-  e.preventDefault();
-  
-  emailContainer = document.getElementById("email-input");
-  codeContainer = document.getElementById("code-input");
+	e.preventDefault();
 
-  emailDis = new ToggleDisplay(emailContainer);
-  codeDis = new ToggleDisplay(codeContainer);
+	emailContainer = document.getElementById('email-input');
+	codeContainer = document.getElementById('code-input');
 
-  if(emailDis.visible()) {
-    emailDis.hide()
-    codeDis.show()
-  } else {
-    modal = new Modal(document.getElementById('pword-modal'));
+	emailDis = new ToggleDisplay(emailContainer);
+	codeDis = new ToggleDisplay(codeContainer);
 
-    closeOnWindowClick(modal);
-    closeOnButtonClick(modal);
-    modal.show();
-  } 
-  return false;
+	if (emailDis.visible()) {
+		emailDis.hide();
+		codeDis.show();
+	} else {
+		modal = new Modal(document.getElementById('pword-modal'));
+
+		closeOnWindowClick(modal);
+		closeOnButtonClick(modal);
+		modal.show();
+	}
+	return false;
 }
-function submitSignin(e) {
-  e.preventDefault();
+function submitSignup(e) {
+	e.preventDefault();
 
-	modal = new Modal(document.getElementById('signin-modal'));
+	formElements = document.getElementById('signup-form').elements;
 
-	closeOnWindowClick(modal);
-	closeOnButtonClick(modal);
-	modal.show();
+	formFieldsToValidate = [
+		{
+			name: {
+				checkNull: 'Please enter your name',
+				checkRegex:
+				{
+					regex: /^[a-zA-Z ]+$/,
+					message: "Please enter a valid name"
+				}
+			}
+		},
+		{ 
+			email: { 
+				checkNull: 'Please enter your email',
+				checkRegex: {
+					regex: /\S+@\S+\.\S+/,
+					message: "Please enter a valid email"
+				} 
+			} 
+		},
+		{
+			'id-number': {
+				checkNull: 'Please enter your ID Number',
+				isInt: "Please enter a valid ID Number",
+				fixedLength: {
+					length: '8',
+					message: 'ID number should be 8 digits'
+				}
+			}
+		},
+		{
+			password: {
+				checkNull: 'Please enter your password',
+				minLength: { 
+					length: '8', 
+					message: 'Short passwords are easy to guess. Try 8 or more characters.'
+				}
+			},
+			'confirm-password': {
+				checkNull: 'Please enter your password',
+				equal: {
+					value: formElements.namedItem('password').value,
+					message: "Passwords don't match"
+				}
+			}
+		}
+	];
+
+	let validated = fieldsValidated(formElements, formFieldsToValidate);
+
+	if (validated) {
+		modal = new Modal(document.getElementById('signin-modal'));
+
+		closeOnWindowClick(modal);
+		closeOnButtonClick(modal);
+		modal.show();
+	}
 
 	return false;
 }
 
 function submitAdminUser(e) {
-  e.preventDefault();
+	e.preventDefault();
 
-  modal = new Modal(document.getElementById('admin-signup-modal'));
+	modal = new Modal(document.getElementById('admin-signup-modal'));
 
 	closeOnWindowClick(modal);
 	closeOnButtonClick(modal);
