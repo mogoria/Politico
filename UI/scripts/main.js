@@ -28,6 +28,77 @@ class Modal extends ToggleDisplay {
 	}
 }
 
+class Validator{
+	constructor(formField, validators) {
+		this.formField = formField;
+		this.value = formField.value.trim();
+		this.errorMessage = "";
+
+		//set the second label as the error label
+		this.errorLabel = formField.parentNode.getElementsByTagName("label")[1];
+		this.validators = validators;
+	}
+
+	hasError(){
+		return this.errorMessage!="";
+	}
+
+	displayError(){
+		if(this.hasError()) {
+			this.formField.classList.add("has-error");
+			if(this.errorLabel) {
+				this.errorLabel.innerHTML = this.errorMessage;
+				this.focus();
+			}
+		}
+	}
+
+	setErrorMessage(message) {
+		this.errorMessage = message;
+	}
+
+	resetError(){
+		this.setErrorMessage("");
+		this.errorLabel.innerHTML = "";
+		this.formField.classList.remove('has-error');
+	}
+
+	checkNull(){
+		return this.value == "";
+	}
+
+	focus(formfield){
+		this.formField.focus();
+	}
+
+	checkLength(minLength){
+		return this.value.length > minLength;
+	}
+
+	validate(){
+		//reset error
+		this.resetError();
+		for(var key in validators) {
+			switch(key) {
+				case "checkNull":
+					if(this.checkNull()) {
+						this.setErrorMessage(validators[key]);
+					}
+					break;
+				case "minLength":
+					if(!this.checkLength(parseInt(validators[key]["length"],10))) {
+						this.setErrorMessage(validators[key]["message"])
+					}
+					break;
+			}
+			if(this.hasError()) {
+				return false;
+			} 
+		}
+		return true
+	}
+}
+
 function closeOnWindowClick(modal) {
 	window.onclick = function(event) {
 		if (event.target == modal.element) {
@@ -47,11 +118,38 @@ function closeOnButtonClick(modal) {
 function submitLogin(e) {
 	e.preventDefault();
 
-	selectAccountModal = new Modal(document.getElementById('accounts-modal'));
+	validated = true;
+	formElements = document.getElementById('login-form').elements;
 
-	closeOnWindowClick(selectAccountModal);
-	closeOnButtonClick(selectAccountModal);
-	selectAccountModal.show();
+	formFieldsToValidate = [
+		{"email":{"checkNull":"Email cannot be blank"}},
+		{"password":{"checkNull":"Password cannot be blank"}}
+	];
+
+	for(obj in formFieldsToValidate) {
+		if(validated) {
+			for(formField in formFieldsToValidate[obj]){
+				validators = formFieldsToValidate[obj][formField];
+				validator = new Validator(formElements.namedItem(formField),validators);
+	
+				if(!validator.validate()) {
+					validated = false;
+					validator.displayError();
+					break;
+				}
+			}
+		}
+	}
+	
+	if(validated) {
+		
+		selectAccountModal = new Modal(document.getElementById('accounts-modal'));
+
+		closeOnWindowClick(selectAccountModal);
+		closeOnButtonClick(selectAccountModal);
+		selectAccountModal.show();
+	}
+
 
 	return false;
 }
