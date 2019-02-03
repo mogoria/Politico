@@ -230,14 +230,51 @@ function submitEmail(e) {
 	codeDis = new ToggleDisplay(codeContainer);
 
 	if (emailDis.visible()) {
-		emailDis.hide();
-		codeDis.show();
-	} else {
-		modal = new Modal(document.getElementById('pword-modal'));
+		let formElements = document.getElementById('send-code').elements;
 
-		closeOnWindowClick(modal);
-		closeOnButtonClick(modal);
-		modal.show();
+		let formFieldsToValidate = [
+			{ 
+				'email': { 
+					checkNull: 'Please enter your email',
+					checkRegex: {
+						regex: /\S+@\S+\.\S+/,
+						message: "Please enter a valid email"
+					} 
+				} 
+			}
+		];
+
+		let validated = fieldsValidated(formElements, formFieldsToValidate);
+
+		if (validated) {
+			//send code to user and toggle display of code entry form
+			emailDis.hide();
+			codeDis.show();
+
+		}
+
+	} else {
+
+		let formElements = document.getElementById('confirm-code').elements;
+
+		let formFieldsToValidate = [
+			{ 
+				'code-confirmation': {
+					checkNull: 'Please enter the code you\'ve received', 
+					isInt: 'Please enter a valid code' 
+				} 
+			}
+		];
+
+		let validated = fieldsValidated(formElements, formFieldsToValidate);
+
+		if (validated) {
+			modal = new Modal(document.getElementById('pword-modal'));
+
+			closeOnWindowClick(modal);
+			closeOnButtonClick(modal);
+			modal.show();
+		}
 	}
 	return false;
 }
