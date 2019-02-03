@@ -424,3 +424,29 @@ function submitAddParty(e) {
 
 	return false;
 }
+
+function submitAddOffice(e) {
+	e.preventDefault();
+
+	let modal = new Modal(document.getElementById('add-office-modal'));
+
+	let formElements = document.getElementById('add-office-form').elements;
+
+	let formFieldsToValidate = [
+		{
+			'political-office': {
+				checkNull: "Please specify a name for the political office"
+			}
+		}
+	];
+
+	let validated = fieldsValidated(formElements,formFieldsToValidate);
+
+	if (validated) {
+		closeOnButtonClick(modal);
+		closeOnWindowClick(modal);
+		modal.show();
+	}
+
+	return false;
+}
