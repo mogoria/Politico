@@ -355,3 +355,30 @@ function submitAdminUser(e) {
 
 	return false;
 }
+
+function submitAddParty(e) {
+	e.preventDefault();
+
+	let modal = new Modal(document.getElementById('add-party-modal'));
+
+	let formElements = document.getElementById('add-party-form').elements;
+
+	let formFieldsToValidate = [
+		{
+			'political-party': {
+				checkNull: "Please specify a name for the political party"
+			}
+		}
+	];
+
+	let validated = fieldsValidated(formElements,formFieldsToValidate);
+
+	if (validated) {
+		closeOnButtonClick(modal);
+		closeOnWindowClick(modal);
+		modal.setMessage("Party added successfully!");
+		modal.show();
+	}
+
+	return false;
+}
