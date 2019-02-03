@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Admin Dashboard</title>
+        <title>Add Admin</title>
         <!--font-awesome-->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link type='text/css' rel='stylesheet' href='../styles/main.css' />
@@ -50,21 +50,24 @@
                 </div>
                 <div class="spacer-20"></div>
                 <div class="form" >
-                    <form action="" method="POST" onsubmit="return submitAdminUser(event)">
+                    <form id="add-admin-form" action="" method="POST" onsubmit="return submitAdminUser(event)">
                         <legend class="text-center">Administrators</legend>
                         <hr>
                         <div class="spacer-20"></div>
                         <div class = "form-group">
                             <label>Name</label>
                             <input type = "text" name="name" class="form-control"/>
+                            <label class="error"></label>
                         </div>
                         <div class = "form-group">
                             <label>Email</label>
-                            <input type = "email" name="email" class="form-control"/>
+                            <input type = "text" name="email" class="form-control"/>
+                            <label class="error"></label>
                         </div>
                         <div class = "form-group">
                             <label>Phone</label>
                             <input type = "text" name="phone" class="form-control"/>
+                            <label class="error"></label>
                         </div>
                         <input type="submit" name="submit-party-btn" value="Add Administrator" class = "form-control btn bg-success"/>
                     </form>

@@ -320,7 +320,9 @@ function submitSignup(e) {
 					length: '8', 
 					message: 'Short passwords are easy to guess. Try 8 or more characters.'
 				}
-			},
+			}
+		},
+		{
 			'confirm-password': {
 				checkNull: 'Please enter your password',
 				equal: {
@@ -347,11 +349,51 @@ function submitSignup(e) {
 function submitAdminUser(e) {
 	e.preventDefault();
 
-	modal = new Modal(document.getElementById('admin-signup-modal'));
+	let formElements = document.getElementById('add-admin-form').elements;
 
-	closeOnWindowClick(modal);
-	closeOnButtonClick(modal);
-	modal.show();
+	let formFieldsToValidate = [
+		{
+			name: {
+				checkNull: 'Please enter the name of the user',
+				checkRegex:
+				{
+					regex: /^[a-zA-Z ]+$/,
+					message: "Please enter a valid name"
+				}
+			}
+		},
+		{ 
+			email: { 
+				checkNull: 'Please enter the email of user',
+				checkRegex: {
+					regex: /\S+@\S+\.\S+/,
+					message: "Please enter a valid email"
+				} 
+			} 
+		},
+		{
+			'phone-number': {
+				checkNull: 'Please enter the Phone Number of the user',
+				isInt: "Please enter a valid phone number",
+				fixedLength: {
+					length: '8',
+					message: 'Phone number should be 8 digits'
+				}
+			}
+		}
+	];
+
+	let validated = fieldsValidated(formElements, formFieldsToValidate);
+
+	if (validated) {
+
+		modal = new Modal(document.getElementById('admin-signup-modal'));
+
+		closeOnWindowClick(modal);
+		closeOnButtonClick(modal);
+		modal.show();
+
+	}
 
 	return false;
 }
