@@ -199,24 +199,32 @@ function submitLogin(e) {
 
 function submitInterestForm(e) {
 	e.preventDefault();
-	formElements = document.getElementById('interest-form').elements;
+	let formElements = document.getElementById('interest-form').elements;
 
-	politicalParty = formElements.namedItem('political-party').value;
-	politicalOffice = formElements.namedItem('political-office').value;
+	let formFieldsToValidate = [
+		{
+			'political-party': {
+				checkNull:'Please select a political party'
+			}
+		},
+		{
+			'political-office': {
+				checkNull: 'Please select a political office'
+			}
+		}
+	];
 
-	modal = new Modal(document.getElementById('interest-modal'));
-	closeOnWindowClick(modal);
-	closeOnButtonClick(modal);
+	let validated = fieldsValidated(formElements,formFieldsToValidate);
 
-	if (!politicalParty) {
-		modal.setMessage('Please select a value for political party');
-	} else if (!politicalOffice) {
-		modal.setMessage('Please select a value for political office');
-	} else {
-		modal.setMessage('Application Successful');
+	if(validated) {
+		modal = new Modal(document.getElementById('interest-modal'));
+		closeOnWindowClick(modal);
+		closeOnButtonClick(modal);
+
+		modal.setMessage('Application successful');
+		modal.show();
 	}
 
-	modal.show();
 	return false;
 }
 

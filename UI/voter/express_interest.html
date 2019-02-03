@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>User Dashboard</title>
+        <title>Express Interest</title>
         <!--font-awesome-->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link type='text/css' rel='stylesheet' href='../styles/main.css' />
@@ -19,7 +19,7 @@
                 </div>             
             </div>
         </div>
-        <div class = 'wrapper'>
+        <div class = 'wrapper gh'>
             <div class="side-bar">
                 <img id='logo' src='../images/logo2.png' />
                 <hr class="hr-sidebar">
@@ -55,16 +55,18 @@
                                 <option value="Millenials">Millenials</option>
                                 <option value="Jedi">Jedi</option>
                                 <option value="GP">GP</option>
-                            </select> 
+                            </select>
+                            <label class="error"></label> 
                         </div>
                         <div class = "form-group">
                             <label>Political Office</label>
                             <select type = "text" name="political-office" class="form-control">
                                 <option value=""></option>
                                 <option value="President">President</option>
-                                <option value="Millenials">Millenials</option>
-                                <option value="Jedi">Cuonsellor</option>
+                                <option value="Governor">Governor</option>
+                                <option value="Senator">Senator</option>
                             </select>
+                            <label class="error"></label>
                         </div>
                         <input id="submit-interest-btn" type="submit" name="submit-party-btn" value="apply" class = "form-control btn bg-success"/>
                     </form>
