@@ -7,7 +7,7 @@ from . import utils
 
 Party = PoliticalParty()
 
-@v1_bp.route('/political_parties', methods=['POST'])
+@v1_bp.route('/parties', methods=['POST'])
 def post_political_party():
     """route to create a political party"""
     new_political_party = dict()
@@ -32,7 +32,7 @@ def post_political_party():
         return jsonify(utils.wrap_response(400, "Please enter a valid request. " +
                                            "Fields include id, name, hqAddress and logoUrl")), 400
 
-@v1_bp.route('/political_parties', methods=['GET'])
+@v1_bp.route('/parties', methods=['GET'])
 def get_all_political_parties():
     all_parties = Party.get_all_parties()
 

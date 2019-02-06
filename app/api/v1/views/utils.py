@@ -1,8 +1,12 @@
 """contains helper functions to routes"""
 def wrap_response(status_code, data):
     """wraps response according to api specification"""
-    wrapper = "data" if 200 <= status_code < 300 else "error"
+    if 200 <= status_code < 300:
+        return {
+            "status":status_code,
+            "data":[data] if isinstance(data) is not list else data
+        }
     return {
         "status":status_code,
-        wrapper:data
+        "error":data
     }
