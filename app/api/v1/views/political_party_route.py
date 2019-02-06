@@ -47,3 +47,19 @@ def get_specific_political_party(party_id):
     if party:
         return jsonify(utils.wrap_response(200, PARTY.get_party_by_id(party_id))), 200 
     return jsonify(utils.wrap_response(404, "Party not found")), 404
+
+@v1_bp.route("/parties/<int:party_id>/name", methods=["PATCH"])
+def edit_specific_political_party(party_id):
+    """endpoint to edit specific political party"""
+    try:
+        data = request.get_json(force=True)
+        updated_name = data['name']
+        party = PARTY.get_party_by_id(party_id)
+        if(party):
+            party['name'] = updated_name
+            PARTY.update_party(**party)
+            return jsonify(utils.wrap_response(200,{"message":"party updated successfully"})), 200
+        return jsonify(utils.wrap_response(404,"party not found")), 404
+    except Exception:
+        return jsonify(utils.wrap_response(400, "Please enter a valid request. " +
+                                           "Fields include name")), 400
