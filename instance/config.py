@@ -1,7 +1,7 @@
 import os
 
 
-class Config(object):
+class Config():
     """Parent configuration class."""
     DEBUG = False
     CSRF_ENABLED = True
