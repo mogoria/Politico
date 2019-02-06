@@ -7,12 +7,11 @@ from . import utils
 
 Party = PoliticalParty()
 
-@v1_bp.route('/political_party', methods=['POST'])
+@v1_bp.route('/political_parties', methods=['POST'])
 def post_political_party():
     """route to create a political party"""
     new_political_party = dict()
     data = request.get_json(force=True)
-    print(data)
 
     try:
         new_political_party = {
@@ -32,3 +31,12 @@ def post_political_party():
     except KeyError:
         return jsonify(utils.wrap_response(400, "Please enter a valid request. " +
                                            "Fields include id, name, hqAddress and logoUrl")), 400
+
+@v1_bp.route('/political_parties', methods=['GET'])
+def get_all_political_parties():
+    all_parties = Party.get_all_parties()
+
+    if all_parties:
+        return jsonify(utils.wrap_response(200,all_parties)), 200
+    else:
+        return jsonify(utils.wrap_response(404, "No data available"))
