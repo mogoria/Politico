@@ -4,7 +4,7 @@ def wrap_response(status_code, data):
     if 200 <= status_code < 300:
         return {
             "status":status_code,
-            "data":[data] if isinstance(data) is not list else data
+            "data":data if isinstance(data, list) else [data]
         }
     return {
         "status":status_code,
