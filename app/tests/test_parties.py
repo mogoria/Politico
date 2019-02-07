@@ -25,7 +25,10 @@ class TestPartiesStatusCodes(BasePartiesTest):
         self.assertTrue(self.post(self.party_data).status_code, 201)
 
     def test_get_single_party(self):
-        pass
+        response = self.post({
+            "id":254
+        })
+        self.assertTrue(response.status_code, 200)
 
     def test_delete_party(self):
         pass
