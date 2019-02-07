@@ -22,7 +22,7 @@ class BasePartiesTest(BaseTest):
 class TestPartiesStatusCodes(BasePartiesTest):
 
     def test_create_party(self):
-        pass
+        self.assertTrue(self.post(self.party_data).status_code, 201)
 
     def test_get_single_party(self):
         pass
