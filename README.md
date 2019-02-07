@@ -16,6 +16,7 @@ You need the following in order for the application to run effectively.
 
 ```
 python 3.6
+postman
 ```
 
 ### Installing
