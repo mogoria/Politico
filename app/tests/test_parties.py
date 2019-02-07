@@ -17,7 +17,9 @@ class BasePartiesTest(BaseTest):
             "logoUrl":"https://photos/257",
             "hqAddress": "Somewhere"
         }
-        
+    def patch(self, party_id, data):
+        path = "{}/{}/name".format(self.path, party_id)
+        return self.client.patch(path, data=json.dumps(data), content_type="application/json")
     
 class TestPartiesStatusCodes(BasePartiesTest):
 
@@ -37,7 +39,10 @@ class TestPartiesStatusCodes(BasePartiesTest):
         self.assertTrue(response.status_code, 200)
 
     def test_edit_party_name(self):
-        pass
+        new_party = self.post(self.party_data2)
+        party_id = new_party.json['data'][0]["id"]
+        response = self.patch(party_id,self.party_data2)
+        self.assertTrue(response.status_code, 200)
 
     def test_get_all_parties(self):
         pass
