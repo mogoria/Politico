@@ -7,4 +7,3 @@ class TestHome(BaseTest):
         """tests response of home route"""
         resp = self.client.get(path="/api/v1/")
         self.assertEqual(resp.status_code, 200)
-    
