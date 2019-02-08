@@ -1,5 +1,5 @@
 """"defines implementation to routes for political parties"""
-from flask import request
+from flask import request, make_response
 from app.api.v1.models.political_party_model import PoliticalParty
 from . import v1_bp
 from . import jsonify
@@ -20,16 +20,16 @@ def post_political_party():
             'hqAddress' : data['hqAddress'],
             'logoUrl' : data['logoUrl']
             }
-
         if PARTY.get_party_by_id(new_political_party['id']):
             #party already exists
-            return jsonify(utils.wrap_response(409, "Party already exists"))
+            return make_response(jsonify(utils.wrap_response(409, "Party already exists")), 409)
         PARTY.create_party(**new_political_party)
-        return jsonify(utils.wrap_response(201, new_political_party)), 201
+        return make_response(jsonify(utils.wrap_response(201, new_political_party)), 201)
 
     except KeyError:
-        return jsonify(utils.wrap_response(400, "Please enter a valid request. " +
-                                           "Fields include id, name, hqAddress and logoUrl")), 400
+        return make_response(jsonify(utils.wrap_response(400, "Please enter a valid request. \
+                                                          Fields include id, name,\
+                                                          hqAddress and logoUrl")), 400)
 
 @v1_bp.route('/parties', methods=['GET'])
 def get_all_political_parties():
