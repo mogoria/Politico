@@ -8,7 +8,7 @@ class BasePartiesTest(BaseTest):
     party_data = {
             "name":"new party",
             "id":254,
-            "photoUrl":"https://photos/254",
+            "logoUrl":"https://photos/254",
             "hqAddress": "Nairobi"
         }
     party_data2 = {
@@ -24,26 +24,25 @@ class BasePartiesTest(BaseTest):
 class TestPartiesStatusCodes(BasePartiesTest):
 
     def test_create_party(self):
-        self.assertTrue(self.post(self.party_data).status_code, 201)
+        self.assertEqual(self.post(self.party_data).status_code, 201)
 
-    def test_get_single_party(self):
-        response = self.post({
-            "id":254
-        })
-        self.assertTrue(response.status_code, 200)
+    def test_get_single_party(self):        
+        response = self.get_single(254)
+        self.assertEqual(response.status_code, 200)
 
     def test_delete_party(self):
         new_party = self.post(self.party_data2)
         party_id = new_party.json['data'][0]["id"]
         response = self.delete(party_id)
-        self.assertTrue(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_edit_party_name(self):
         new_party = self.post(self.party_data2)
         party_id = new_party.json['data'][0]["id"]
         response = self.patch(party_id,self.party_data2)
-        self.assertTrue(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_get_all_parties(self):
-        pass
+        response = self.get()
+        self.assertEqual(response.status_code, 200)
 
