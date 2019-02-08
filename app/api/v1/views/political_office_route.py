@@ -31,6 +31,7 @@ def create_offices():
         return make_response(
             jsonify(utils.wrap_response(409, "office already exists"))
         )
+
 @v1_bp.route("/offices", methods=['GET'])
 def get_all_offices():
     offices = OFFICE.Offices
@@ -40,4 +41,15 @@ def get_all_offices():
             )
     return make_response(
         jsonify(utils.wrap_response(404, "offices not found"))
+    )
+
+@v1_bp.route("/offices/<int:office_id>", methods=['GET'])
+def get_single_office(office_id):
+    found_office = [office for office in OFFICE.Offices if office['id'] == office_id][0]
+    if found_office:
+        return make_response(
+            jsonify(utils.wrap_response(200, found_office)), 200
+        )
+    return make_response(
+        jsonify(utils.wrap_response(404, "office not found")), 404
     )
