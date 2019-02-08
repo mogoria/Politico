@@ -54,7 +54,7 @@ export FLASK_APP=run.py
 
 export FLASK_DEBUG=1
 
-export FLASK_ENVIRONMENT=
+export FLASK_ENVIRONMENT=development
 ```
 ## Running the tests
 
@@ -62,6 +62,11 @@ pytest is the recommended test runner for this application.
 To run tests, use the command
 ```
 pytest app/tests
+```
+
+in order to view coverage, run
+```
+pytest --cov=app app/tests
 ```
 
 ## Endpoints
