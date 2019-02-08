@@ -3,8 +3,11 @@ class PoliticalOffice:
     def __init__(self):
         self.Offices = []
 
-    def create_office(self, office_id, office_type, office_name):
+    def create_office(self, id, type, name):
         pass
 
-    def get_office(self, office_id):
+    def get_office(self, id):
+        pass
+
+    def get_all_offices(self):
         pass
