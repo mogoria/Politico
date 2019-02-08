@@ -15,6 +15,9 @@ class InitOffice:
         "name":"office2"
     }
 
+class BaseOfficeClass(InitOffice, BaseTest):
+    path = "/api/v1/offices"
+
 
 class TestOfficeModel(InitOffice, unittest.TestCase):         
     def test_create_office(self):
@@ -31,3 +34,8 @@ class TestOfficeModel(InitOffice, unittest.TestCase):
     def test_get_single_office(self):
         res = self.Office.get_office(22)
         self.assertEqual(res, self.office2)
+
+class TestOfficeStatusCodes(BaseOfficeClass):
+    def test_create_office(self):
+        resp = self.post(self.office1)
+        self.assertEqual(resp.status_code, 201)
