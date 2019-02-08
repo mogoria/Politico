@@ -20,7 +20,6 @@ def post_political_party():
             'hqAddress' : data['hqAddress'],
             'logoUrl' : data['logoUrl']
             }
-        print("Parties: {}".format(PARTY.get_all_parties()))
         if PARTY.get_party_by_id(new_political_party['id']):
             #party already exists
             return make_response(jsonify(utils.wrap_response(409, "Party already exists")), 409)
@@ -28,8 +27,9 @@ def post_political_party():
         return make_response(jsonify(utils.wrap_response(201, new_political_party)), 201)
 
     except KeyError:
-        return make_response(jsonify(utils.wrap_response(400, "Please enter a valid request. " +
-                                           "Fields include id, name, hqAddress and logoUrl")), 400)
+        return make_response(jsonify(utils.wrap_response(400, "Please enter a valid request. \
+                                                          Fields include id, name,\
+                                                          hqAddress and logoUrl")), 400)
 
 @v1_bp.route('/parties', methods=['GET'])
 def get_all_political_parties():
