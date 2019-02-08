@@ -29,5 +29,15 @@ def create_offices():
         )
     else:
         return make_response(
-            jsonify(utils.wrap_response(409, "party already exists"))
+            jsonify(utils.wrap_response(409, "office already exists"))
         )
+@v1_bp.route("/offices", methods=['GET'])
+def get_all_offices():
+    offices = OFFICE.Offices
+    if offices:
+        return make_response(
+            jsonify(utils.wrap_response(200, offices)), 200
+            )
+    return make_response(
+        jsonify(utils.wrap_response(404, "offices not found"))
+    )
