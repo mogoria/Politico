@@ -15,7 +15,7 @@ class BaseTest(unittest.TestCase):
 
     def post(self, data):
         """returns response from a post request"""
-        return self.client.post(path=self.path, 
+        return self.client.post(path=self.path,
                                 data=json.dumps(data), content_type="application/json")
 
     def get(self):
