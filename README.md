@@ -10,6 +10,8 @@ Politico is a web application to handle elections. Politico enables a wide range
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
+You can find a live demo of the application [here](https://politico-nbo-cycle-37.herokuapp.com/api/v1)
+
 ### Prerequisites
 
 You need the following in order for the application to run effectively.
@@ -20,6 +22,11 @@ postman
 ```
 
 ### Installing
+
+Clone this repository
+```
+git clone https://github.com/mogoria/politico
+```
 
 You'll need to set up a virtual environment.
 
@@ -41,7 +48,14 @@ Run the command.
 ```
 pip install  requirements.txt
 ```
+set up environental variables
+```
+export FLASK_APP=run.py
 
+export FLASK_DEBUG=1
+
+export FLASK_ENVIRONMENT=
+```
 ## Running the tests
 
 pytest is the recommended test runner for this application.
@@ -50,6 +64,17 @@ To run tests, use the command
 pytest app/tests
 ```
 
+## Endpoints
+|   METHOD       |    URL                      | FUNCTION
+|  ------------  | ----------                   |  ---------
+|   POST         | /api/v1/offices           |  create an office 
+|   POST         | /api/v1/parties           |  create a party
+|   GET          | /api/v1/offices           |  find all offices
+|   GET          | /api/v1/parties           | find all parties
+|   GET          | /api/v1/offices/<int:office_id> | find a specific office with the office_id
+|   GET          | /api/v1/parties/<int:party_id>  | find a specific party with the party_id
+|   DELETE       | /api/v1/offices/<int:office_id> | delete a specific office with the office_id
+|   DELETE       | /api/v1/parties/<int:party_id>  | delete a specific party with  the party_id
 
 ## Authors
 
