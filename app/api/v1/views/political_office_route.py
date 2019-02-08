@@ -25,8 +25,7 @@ def create_offices():
     created_office = OFFICE.create_office(**new_office)
     if created_office:
         return make_response(
-            jsonify(utils.wrap_response(201, created_office
-            )), 201
+            jsonify(utils.wrap_response(201, created_office)), 201
         )
     else:
         return make_response(
