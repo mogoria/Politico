@@ -39,3 +39,9 @@ class TestOfficeStatusCodes(BaseOfficeClass):
     def test_create_office(self):
         resp = self.post(self.office1)
         self.assertEqual(resp.status_code, 201)
+
+    def test_get_all_offices(self):
+        new_office = self.post(self.office2)
+        resp = self.get()
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json['data'][-1], new_office)
