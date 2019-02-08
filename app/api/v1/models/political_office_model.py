@@ -7,6 +7,7 @@ class PoliticalOffice:
         new_office = locals()
         del(new_office['self'])
         self.Offices.append(new_office)
+        return new_office
 
     def get_all_offices(self):
         return self.Offices
