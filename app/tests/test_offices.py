@@ -52,3 +52,10 @@ class TestOfficeStatusCodes(BaseOfficeClass):
         resp = self.get()
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json['data'][-1], self.office2)
+
+    def test_get_specific_office(self):
+        new_office = self.post(self.office2)
+        office_id = new_office.json['data'][0]['id']
+        resp = self.get_single(office_id)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json['data'][0], new_office)
