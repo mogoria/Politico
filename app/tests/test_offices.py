@@ -61,11 +61,6 @@ class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
         self.assertEqual(resp.json['data'][0], new_office.json['data'][0])
 
 class TestValidation(BaseOfficeClass):
-    def test_empty_database(self):
-        get = self.get()
-        print(get)
-        self.assertEqual(get.status_code, 404)
-
     def test_missing_key(self):
         data = {
             "id":254,
@@ -87,9 +82,9 @@ class TestValidation(BaseOfficeClass):
 
         post = self.post(data)
         self.assertEqual(post.status_code, 400)
-        self.assertIn(post.json["message"],"incorrect format")
+        self.assertIn("incorrect format", post.json["message"])
 
-    def test_get_empty_db(self):
+    def test_get_in_empty_db(self):
         self.assertEqual(self.get().status_code, 404)
 
     def test_getting_non_existing_id(self):

@@ -2,6 +2,7 @@ import unittest
 import json
 from app import create_app
 from app.api.v1.models.political_party_model import PoliticalParty
+from app.api.v1.views.political_office_route import OFFICE
 
 
 class BaseTest(unittest.TestCase):
@@ -23,6 +24,7 @@ class BaseTest(unittest.TestCase):
         return self.client.get(path=self.path, content_type="application/json")
 
     def get_single(self, id):
+        """returns response from get request for a specific id"""
         path = "{}/{}".format(self.path, id)
         return self.client.get(path=path, content_type="application/json")
 
@@ -32,4 +34,6 @@ class BaseTest(unittest.TestCase):
         return self.client.delete(path, content_type="application/json")
 
     def tearDown(self):
+        """cleans up after test has run"""
         self.app.testing = False
+        OFFICE.Offices.clear()
