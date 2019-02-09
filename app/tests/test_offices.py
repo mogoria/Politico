@@ -40,7 +40,7 @@ class TestOfficeModel(InitOffice, unittest.TestCase):
         res = self.Office.get_office(22)
         self.assertEqual(res, self.office2)
 
-class TestOfficeStatusCodes(BaseOfficeClass):
+class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
     def test_create_office(self):
         """tests the endpoint to create an office"""
         resp = self.post(self.office1)
@@ -59,3 +59,39 @@ class TestOfficeStatusCodes(BaseOfficeClass):
         resp = self.get_single(office_id)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json['data'][0], new_office.json['data'][0])
+
+class TestValidation(BaseOfficeClass):
+    def test_empty_database(self):
+        get = self.get()
+        print(get)
+        self.assertEqual(get.status_code, 404)
+
+    def test_missing_key(self):
+        data = {
+            "id":254,
+            "":"type2",
+            "name":"office2"
+        }
+        post = self.post(data)
+        self.assertEqual(post.status_code, 400)
+        print(post.json['error'])
+        self.assertTrue(post.json['error'])
+
+    def test_more_keys(self):
+        data = {
+            "id": 32,
+            "name":"office3",
+            "type": "type13",
+            "extra key": "value"
+        }
+
+        post = self.post(data)
+        self.assertEqual(post.status_code, 400)
+        self.assertIn(post.json["message"],"incorrect format")
+
+    def test_get_empty_db(self):
+        self.assertEqual(self.get().status_code, 404)
+
+    def test_getting_non_existing_id(self):
+        self.post(self.office1)
+        self.assertTrue(self.get().status_code, 404)
