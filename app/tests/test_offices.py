@@ -51,7 +51,6 @@ class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
         self.post(self.office2)
         resp = self.get()
         self.assertEqual(resp.status_code, 200)
-        print(resp.json.keys())
         self.assertEqual(resp.json['data'][-1], self.office2)
 
     def test_get_specific_office(self):
@@ -70,7 +69,6 @@ class TestValidation(BaseOfficeClass):
         }
         post = self.post(data)
         self.assertEqual(post.status_code, 400)
-        print(post.json['error'])
         self.assertTrue(post.json['error'])
 
     def test_more_keys(self):
@@ -87,9 +85,27 @@ class TestValidation(BaseOfficeClass):
 
     def test_get_in_empty_db(self):
         self.assertEqual(self.get().status_code, 404)
+        self.assertIn("offices not found", self.get().json['error'])
 
     def test_getting_non_existing_id(self):
         self.post(self.office1)
-        self.assertTrue(self.get().status_code, 404)
+        resp = self.get_single(9872938754)
+        self.assertTrue(resp.status_code, 404)
+        self.assertIn("office not found", resp.json['error'])
 
-    
+    def test_create_existing_office(self):
+        self.post(self.office1)
+        resp = self.post(self.office1)
+        self.assertTrue(resp.status_code, 409)
+        self.assertIn('already exists', resp.json['error'])
+
+    def test_invalid_type(self):
+        invalid_data = {
+            "id":"123",
+            "name":234,
+            "type": False
+        }
+        post = self.post(invalid_data)
+        self.assertEqual(post.status_code, 400)
+        self.assertIn("incorrect format", post.json['error'])
+

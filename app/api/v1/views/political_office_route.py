@@ -15,20 +15,16 @@ def create_offices():
         "type": "office type",
         "name": "office name"
     }
-    error_response = {}
+    response = {}
 
     if utils.check_valid_fields(data, valid_fields):
         if not utils.check_valid_type(data, sample_data):
             created_office = OFFICE.create_office(**data)
             if created_office:
-                return make_response(
-                    jsonify(utils.wrap_response(201, created_office)), 201
-                )
-            return make_response(
-                jsonify(utils.wrap_response(409, "office already exists"))
-            )
+                return utils.util_response(201, created_office)
+            return utils.util_response(409, "office already exists")
         else:
-            error_response = {
+            response = {
                 "status":400,
                 "error": "incorrect format, please provide valid types for. {}".format(
                     ", ".join(
@@ -37,13 +33,11 @@ def create_offices():
                     )
             }
     else:
-        error_response = {
+        response = {
             "status":400,
             "error": "incorrect format, please provide valid fields. {}".format(", ".join(valid_fields)) 
         }
-    return make_response(
-        jsonify(error_response) , error_response.get('status')
-    )
+    return utils.util_response(response.get('status'), response.get('error'))
 
 @v1_bp.route("/offices", methods=['GET'])
 def get_all_offices():
@@ -58,11 +52,7 @@ def get_all_offices():
 
 @v1_bp.route("/offices/<int:office_id>", methods=['GET'])
 def get_single_office(office_id):
-    found_office = [office for office in OFFICE.Offices if office['id'] == office_id][0]
+    found_office = [office for office in OFFICE.Offices if office['id'] == office_id]
     if found_office:
-        return make_response(
-            jsonify(utils.wrap_response(200, found_office)), 200
-        )
-    return make_response(
-        jsonify(utils.wrap_response(404, "office not found")), 404
-    )
+        return utils.util_response(200, found_office)
+    return utils.util_response(400, "office not found")

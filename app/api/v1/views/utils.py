@@ -1,4 +1,6 @@
 """contains helper functions to routes"""
+from flask import make_response
+from flask import jsonify
 def wrap_response(status_code, data):
     """wraps response according to api specification"""
     if 200 <= status_code < 300:
@@ -11,8 +13,13 @@ def wrap_response(status_code, data):
         "error":data
     }
 
+def util_response(status_code, data):
+    return make_response(
+        jsonify(wrap_response(status_code, data)), status_code
+    )
+
 def check_valid_fields(data, valid_fields):
-    """returns False if:
+    """returns False if data:
     - Doesn't have all keys in field list
     - Contains keys not in valid field list"""
     for field in valid_fields:
