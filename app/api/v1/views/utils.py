@@ -14,6 +14,7 @@ def wrap_response(status_code, data):
     }
 
 def util_response(status_code, data):
+    """wraps response in a make_response block"""
     return make_response(
         jsonify(wrap_response(status_code, data)), status_code
     )
@@ -25,12 +26,14 @@ def check_valid_fields(data, valid_fields):
     for field in valid_fields:
         if not data.get(field):
             return False
-    
+
     if len(valid_fields) != len(data.keys()):
         return False
     return True
 
 def check_valid_type(data, sample_data):
+    """checks if data has same type of values in sample data
+    returns a list of faulty types """
     response = []
 
     for key, value in data.items():
