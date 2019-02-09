@@ -9,28 +9,41 @@ OFFICE = PoliticalOffice()
 @v1_bp.route("/offices", methods=['POST'])
 def create_offices():
     data = request.get_json(force=True)
-    try:
-        new_office = {
-            "id":data['id'],
-            "type":data['type'],
-            "name":data['name']
-        }
-    except KeyError:
-        return make_response(
-            jsonify(utils.wrap_response(400, {
-                "message":"All fields are required. id, name and type"
-            })), 400
-        )
+    valid_fields = ["id", "type", "name"]
+    sample_data = {
+        "id":12,
+        "type": "office type",
+        "name": "office name"
+    }
+    error_response = {}
 
-    created_office = OFFICE.create_office(**new_office)
-    if created_office:
-        return make_response(
-            jsonify(utils.wrap_response(201, created_office)), 201
-        )
+    if utils.check_valid_fields(data, valid_fields):
+        if not utils.check_valid_type(data, sample_data):
+            created_office = OFFICE.create_office(**data)
+            if created_office:
+                return make_response(
+                    jsonify(utils.wrap_response(201, created_office)), 201
+                )
+            return make_response(
+                jsonify(utils.wrap_response(409, "office already exists"))
+            )
+        else:
+            error_response = {
+                "status":400,
+                "error": "incorrect format, please provide valid types for. {}".format(
+                    ", ".join(
+                        ["{}:{}".format(key, type(value)) for key, value in sample_data.items()]
+                        )
+                    )
+            }
     else:
-        return make_response(
-            jsonify(utils.wrap_response(409, "office already exists"))
-        )
+        error_response = {
+            "status":400,
+            "error": "incorrect format, please provide valid fields. {}".format(", ".join(valid_fields)) 
+        }
+    return make_response(
+        jsonify(error_response) , error_response.get('status')
+    )
 
 @v1_bp.route("/offices", methods=['GET'])
 def get_all_offices():
@@ -40,7 +53,7 @@ def get_all_offices():
             jsonify(utils.wrap_response(200, offices)), 200
             )
     return make_response(
-        jsonify(utils.wrap_response(404, "offices not found"))
+        jsonify(utils.wrap_response(404, "offices not found")), 404
     )
 
 @v1_bp.route("/offices/<int:office_id>", methods=['GET'])

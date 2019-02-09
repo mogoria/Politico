@@ -51,6 +51,7 @@ class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
         self.post(self.office2)
         resp = self.get()
         self.assertEqual(resp.status_code, 200)
+        print(resp.json.keys())
         self.assertEqual(resp.json['data'][-1], self.office2)
 
     def test_get_specific_office(self):
@@ -82,7 +83,7 @@ class TestValidation(BaseOfficeClass):
 
         post = self.post(data)
         self.assertEqual(post.status_code, 400)
-        self.assertIn("incorrect format", post.json["message"])
+        self.assertIn("incorrect format", post.json["error"])
 
     def test_get_in_empty_db(self):
         self.assertEqual(self.get().status_code, 404)
@@ -90,3 +91,5 @@ class TestValidation(BaseOfficeClass):
     def test_getting_non_existing_id(self):
         self.post(self.office1)
         self.assertTrue(self.get().status_code, 404)
+
+    
