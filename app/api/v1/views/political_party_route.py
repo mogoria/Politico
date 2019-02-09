@@ -20,15 +20,18 @@ def post_political_party():
             'hqAddress' : data['hqAddress'],
             'logoUrl' : data['logoUrl']
             }
-        if PARTY.get_party_by_id(new_political_party['id']):
-            #party already exists
-            return utils.util_response(409, "Party already exists")
-        PARTY.create_party(**new_political_party)
-        return make_response(jsonify(utils.wrap_response(201, new_political_party)), 201)
+        null_fields = utils.check_null(new_political_party)
+        if not null_fields:
+            if PARTY.get_party_by_id(new_political_party['id']):
+                #party already exists
+                return utils.util_response(409, "Party already exists")
+            PARTY.create_party(**new_political_party)
+            return make_response(jsonify(utils.wrap_response(201, new_political_party)), 201)
+        return utils.util_response(400, "incorrect format. Please provide valid fields for: {}".format(", ".join(null_fields)))
 
     except KeyError:
         return utils.util_response(400, 
-        "Please enter a valid request. Fields include is, name, hqAddress and logoUrl")
+        "incorrect format. Fields include is, name, hqAddress and logoUrl")
 
 @v1_bp.route('/parties', methods=['GET'])
 def get_all_political_parties():
@@ -60,7 +63,7 @@ def edit_specific_political_party(party_id):
             return jsonify(utils.wrap_response(200, {"message":"party updated successfully"})), 200
         return jsonify(utils.wrap_response(404, "party not found")), 404
     except Exception:
-        return jsonify(utils.wrap_response(400, "Please enter a valid request. " +
+        return jsonify(utils.wrap_response(400, "incorrect format. " +
                                            "Fields include name")), 400
 
 @v1_bp.route("/parties/<int:party_id>", methods=['DELETE'])
@@ -69,4 +72,4 @@ def delete_political_party(party_id):
     party_deleted = PARTY.delete_party_by_id(party_id)
     if party_deleted:
         return jsonify(utils.wrap_response(200, {"message":"Party deleted successfully"})), 200
-    return jsonify(utils.wrap_response(404, "Party doesn't exist")), 404
+    return jsonify(utils.wrap_response(404, "Party not found")), 404

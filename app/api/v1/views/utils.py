@@ -38,3 +38,11 @@ def check_valid_type(data, sample_data):
             response.append(key)
 
     return response
+
+def check_null(data):
+    null_fields = []
+    for field, value in data.items():
+        if not value:
+            null_fields.append(field)
+    print("Null fields: {}".format(null_fields))
+    return null_fields
