@@ -40,7 +40,7 @@ class TestOfficeModel(InitOffice, unittest.TestCase):
         res = self.Office.get_office(22)
         self.assertEqual(res, self.office2)
 
-class TestOfficeStatusCodes(BaseOfficeClass):
+class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
     def test_create_office(self):
         """tests the endpoint to create an office"""
         resp = self.post(self.office1)
@@ -59,3 +59,53 @@ class TestOfficeStatusCodes(BaseOfficeClass):
         resp = self.get_single(office_id)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json['data'][0], new_office.json['data'][0])
+
+class TestValidation(BaseOfficeClass):
+    def test_missing_key(self):
+        data = {
+            "id":254,
+            "":"type2",
+            "name":"office2"
+        }
+        post = self.post(data)
+        self.assertEqual(post.status_code, 400)
+        self.assertTrue(post.json['error'])
+
+    def test_more_keys(self):
+        data = {
+            "id": 32,
+            "name":"office3",
+            "type": "type13",
+            "extra key": "value"
+        }
+
+        post = self.post(data)
+        self.assertEqual(post.status_code, 400)
+        self.assertIn("incorrect format", post.json["error"])
+
+    def test_get_in_empty_db(self):
+        self.assertEqual(self.get().status_code, 404)
+        self.assertIn("offices not found", self.get().json['error'])
+
+    def test_getting_non_existing_id(self):
+        self.post(self.office1)
+        resp = self.get_single(9872938754)
+        self.assertTrue(resp.status_code, 404)
+        self.assertIn("office not found", resp.json['error'])
+
+    def test_create_existing_office(self):
+        self.post(self.office1)
+        resp = self.post(self.office1)
+        self.assertTrue(resp.status_code, 409)
+        self.assertIn('already exists', resp.json['error'])
+
+    def test_invalid_type(self):
+        invalid_data = {
+            "id":"123",
+            "name":234,
+            "type": False
+        }
+        post = self.post(invalid_data)
+        self.assertEqual(post.status_code, 400)
+        self.assertIn("incorrect format", post.json['error'])
+

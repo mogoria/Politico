@@ -11,6 +11,9 @@ class PoliticalOffice:
         """adds office to office list and returns newly created office"""
         new_office = locals()
         del new_office['self']
+        if self.get_office(new_office.get('id')):
+            #if office already exists, return empty list
+            return {}
         self.Offices.append(new_office)
         return new_office
 
@@ -20,4 +23,7 @@ class PoliticalOffice:
 
     def get_office(self, office_id):
         """searches an office by id and returns it"""
-        return [office for office in self.Offices if office.get('id') == office_id][0]
+        found_office = [office for office in self.Offices if office.get('id') == office_id]
+        if found_office:
+            return found_office[0]
+        return {}
