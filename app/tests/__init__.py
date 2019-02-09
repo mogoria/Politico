@@ -3,6 +3,7 @@ import json
 from app import create_app
 from app.api.v1.models.political_party_model import PoliticalParty
 from app.api.v1.views.political_office_route import OFFICE
+from app.api.v1.views.political_party_route import PARTY
 
 
 class BaseTest(unittest.TestCase):
@@ -37,3 +38,4 @@ class BaseTest(unittest.TestCase):
         """cleans up after test has run"""
         self.app.testing = False
         OFFICE.Offices.clear()
+        PARTY.parties.clear()
