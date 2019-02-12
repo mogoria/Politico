@@ -32,7 +32,7 @@ def post_political_party():
 
     except KeyError:
         return utils.util_response(400, 
-                                   "incorrect format. Fields include is, name, hqAddress and logoUrl")
+                                   "incorrect format. Fields include id, name, hqAddress and logoUrl")
 
 @v1_bp.route('/parties', methods=['GET'])
 def get_all_political_parties():

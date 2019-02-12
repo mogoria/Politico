@@ -35,10 +35,19 @@ class TestOfficeModel(InitOffice, unittest.TestCase):
         self.Office.create_office(** self.office2)
         self.assertEqual(len(self.Office.get_all_offices()), 2)
 
-    def test_get_single_office(self):
+    def test_get_office_by_id(self):
         """tests whether the office model can get a specific office"""
-        res = self.Office.get_office(22)
+        res = self.Office.get_office_by_id(22)
         self.assertEqual(res, self.office2)
+
+    def test_get_office_by_name(self):
+        """tests whether the office model can get a specific office by name"""
+        res = self.Office.get_office_by_name(self.office1.get('name'))
+        self.assertEqual(res, self.office1)
+
+    def test_null_if_no_office(self):
+        res = self.Office.get_office_by_name("random name")
+        self.assertEqual(res, {})
 
 class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
     def test_create_office(self):

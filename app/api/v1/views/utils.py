@@ -47,5 +47,4 @@ def check_null(data):
     for field, value in data.items():
         if not value:
             null_fields.append(field)
-    print("Null fields: {}".format(null_fields))
     return null_fields
