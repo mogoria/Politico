@@ -26,7 +26,7 @@ def check_valid_fields(data, valid_fields):
     for field in valid_fields:
         if not data.get(field):
             return False
-
+    
     if len(valid_fields) != len(data.keys()):
         return False
     return True

@@ -26,7 +26,7 @@ def create_offices():
             "error": "incorrect format, please provide valid fields. {}"
                      .format(", ".join(valid_fields))
         }
-    if utils.check_valid_type(data, sample_data):
+    elif utils.check_valid_type(data, sample_data):
         response = {
             "status":400,
             "error": "incorrect format, please provide valid types for: {}".format(
@@ -35,7 +35,7 @@ def create_offices():
                     )
                 )
         }
-    if response != {}:
+    if response:
         return utils.util_response(response.get('status'), response.get('error'))
 
     #{} if not office created else returns the new office
@@ -62,7 +62,8 @@ def get_all_offices():
 @v1_bp.route("/offices/<int:office_id>", methods=['GET'])
 def get_single_office(office_id):
     """endpoint to make a get request for only one office"""
-    found_office = [office for office in OFFICE.get_all_offices() if office['_id'] == office_id]
+    found_office = OFFICE.get_office_by_id(office_id)
+    found_office = utils.desanitise(found_office)
     if found_office:
         return utils.util_response(200, found_office)
     return utils.util_response(400, "office not found")

@@ -1,5 +1,5 @@
-"""political office model class"""
 Offices = []
+"""political office model class"""
 class PoliticalOffice:
     """Model class for political offices
     stores political offices in list

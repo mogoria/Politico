@@ -38,7 +38,6 @@ class TestOfficeModel(BaseOfficeClass):
 
     def test_get_office_by_id(self):
         """tests whether the office model can get a specific office"""
-        print(sanitise(self.office1))
         self.Office.create_office(** sanitise(self.office1))
         res = self.Office.get_office_by_id(self.office1.get('id'))
         res = desanitise(res)
@@ -73,7 +72,7 @@ class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
         office_id = new_office.json['data'][0]['id']
         resp = self.get_single(office_id)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(desanitise(resp.json['data'][0]), new_office.json['data'][0])
+        self.assertEqual(resp.json['data'][0], new_office.json['data'][0])
 
 class TestValidation(BaseOfficeClass):
     def test_missing_key(self):
