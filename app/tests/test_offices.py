@@ -1,6 +1,7 @@
 import unittest
 from app.api.v1.models.political_office_model import PoliticalOffice
 from . import BaseTest
+from app.api.v1.views.utils import sanitise, desanitise
 
 class InitOffice:
     """sets mock data to be used for testing"""
@@ -24,26 +25,26 @@ class TestOfficeModel(InitOffice, unittest.TestCase):
     """tests the office model"""
     def test_create_office(self):
         """tests whether office model can create office"""
-        self.Office.create_office(** self.office1)
+        self.Office.create_office(** sanitise(self.office1))
         self.assertEqual(len(self.Office.Offices), 1)
-        self.assertEqual(self.Office.Offices[0], self.office1)
+        self.assertEqual(self.Office.Offices[0], sanitise(self.office1))
 
     def test_get_all_offices(self):
         """tests whether the office model gets all offices"""
         self.Office.Offices.clear()
-        self.Office.create_office(** self.office1)
-        self.Office.create_office(** self.office2)
+        self.Office.create_office(** sanitise(self.office1))
+        self.Office.create_office(** sanitise(self.office2))
         self.assertEqual(len(self.Office.get_all_offices()), 2)
 
     def test_get_office_by_id(self):
         """tests whether the office model can get a specific office"""
         res = self.Office.get_office_by_id(22)
-        self.assertEqual(res, self.office2)
+        self.assertEqual(res, sanitise(self.office2))
 
     def test_get_office_by_name(self):
         """tests whether the office model can get a specific office by name"""
         res = self.Office.get_office_by_name(self.office1.get('name'))
-        self.assertEqual(res, self.office1)
+        self.assertEqual(res, sanitise(self.office1))
 
     def test_null_if_no_office(self):
         res = self.Office.get_office_by_name("random name")
@@ -60,11 +61,11 @@ class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
         self.post(self.office2)
         resp = self.get()
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json['data'][-1], self.office2)
+        self.assertEqual(resp.json['data'][-1], sanitise(self.office2))
 
     def test_get_specific_office(self):
         new_office = self.post(self.office2)
-        office_id = new_office.json['data'][0]['id']
+        office_id = new_office.json['data'][0]['_id']
         resp = self.get_single(office_id)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json['data'][0], new_office.json['data'][0])

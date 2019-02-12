@@ -7,16 +7,16 @@ class PoliticalOffice:
     def __init__(self):
         self.Offices = []
 
-    def create_office(self, id, type, name):
+    def create_office(self, _id, _type, _name):
         """adds office to office list and returns newly created office"""
         
-        if self.get_office_by_id(id) or self.get_office_by_name(name):
+        if self.get_office_by_id(_id) or self.get_office_by_name(_name):
             #if office already exists, return empty list
             return {}
         new_office = {
-            'id':id,
-            'type': type,
-            'name': name
+            '_id':_id,
+            '_type': _type,
+            '_name': _name
         }
         self.Offices.append(new_office)
         return new_office
@@ -27,14 +27,14 @@ class PoliticalOffice:
 
     def get_office_by_id(self, office_id):
         """searches an office by id and returns it"""
-        found_office = [office for office in self.Offices if office.get('id') == office_id]
+        found_office = [office for office in self.Offices if office.get('_id') == office_id]
         if found_office:
             return found_office[0]
         return {}
 
     def get_office_by_name(self, office_name):
         """searches an office by name and returns it"""
-        office = [office for office in self.Offices if office.get("name") == office_name]
+        office = [office for office in self.Offices if office.get("_name") == office_name]
         if office:
             return office[0]
         return {}

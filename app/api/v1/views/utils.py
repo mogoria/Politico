@@ -48,3 +48,16 @@ def check_null(data):
         if not value:
             null_fields.append(field)
     return null_fields
+
+def sanitise(dic):
+    new_dic = dict()
+    for key, value in dic.items():
+        new_dic["_{}".format(key)] = value
+    return new_dic
+
+def desanitise(dic):
+    new_dic = dict()
+    for key, value in dic.items():
+        #omit the underscore from the key name
+        new_dic[key[1:]] = value
+    return new_dic

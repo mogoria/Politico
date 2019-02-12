@@ -38,8 +38,8 @@ def create_offices():
     if response != {}:
         return utils.util_response(response.get('status'), response.get('error'))
 
-    created_office = OFFICE.create_office(**data)
-    if created_office:
+    created_office = OFFICE.create_office(**utils.sanitise(data))
+    if bool(created_office):
         return utils.util_response(201, created_office)
     return utils.util_response(409, "office already exists")
 
@@ -58,7 +58,7 @@ def get_all_offices():
 @v1_bp.route("/offices/<int:office_id>", methods=['GET'])
 def get_single_office(office_id):
     """endpoint to make a get request for only one office"""
-    found_office = [office for office in OFFICE.Offices if office['id'] == office_id]
+    found_office = [office for office in OFFICE.Offices if office['_id'] == office_id]
     if found_office:
         return utils.util_response(200, found_office)
     return utils.util_response(400, "office not found")
