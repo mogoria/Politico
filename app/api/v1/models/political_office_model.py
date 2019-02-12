@@ -13,13 +13,14 @@ class PoliticalOffice:
         if self.get_office_by_id(_id) or self.get_office_by_name(_name):
             #if office already exists, return empty list
             return {}
-        new_office = {
-            '_id':_id,
-            '_type': _type,
-            '_name': _name
-        }
-        self.Offices.append(new_office)
-        return new_office
+        else:
+            new_office = {
+                '_id':_id,
+                '_type': _type,
+                '_name': _name
+            }
+            self.Offices.append(new_office)
+            return new_office
 
     def get_all_offices(self):
         """returns list of dictionaries of all offices"""

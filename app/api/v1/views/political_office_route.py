@@ -26,10 +26,10 @@ def create_offices():
             "error": "incorrect format, please provide valid fields. {}"
                      .format(", ".join(valid_fields))
         }
-    if (response == {}) and utils.check_valid_type(data, sample_data):
+    if utils.check_valid_type(data, sample_data):
         response = {
             "status":400,
-            "error": "incorrect format, please provide valid types for. {}".format(
+            "error": "incorrect format, please provide valid types for: {}".format(
                 ", ".join(
                     ["{}:{}".format(key, type(value)) for key, value in sample_data.items()]
                     )
@@ -38,7 +38,7 @@ def create_offices():
     if response != {}:
         return utils.util_response(response.get('status'), response.get('error'))
 
-    created_office = OFFICE.create_office(**utils.sanitise(data))
+    created_office = OFFICE.create_o    ffice(**utils.sanitise(data))
     if bool(created_office):
         return utils.util_response(201, created_office)
     return utils.util_response(409, "office already exists")
