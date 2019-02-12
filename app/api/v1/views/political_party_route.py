@@ -22,7 +22,7 @@ def post_political_party():
             }
         null_fields = utils.check_null(new_political_party)
         if not null_fields:
-            if PARTY.get_party_by_id(new_political_party['id']):
+            if PARTY.get_party_by_id(new_political_party.get('id')) or PARTY.get_party_by_name(new_political_party.get('name')):
                 #party already exists
                 return utils.util_response(409, "Party already exists")
             PARTY.create_party(**new_political_party)

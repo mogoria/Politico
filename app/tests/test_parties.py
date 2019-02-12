@@ -1,5 +1,7 @@
 import json
+from app.api.v1.models.political_party_model import PoliticalParty
 from . import BaseTest
+from . import unittest
 
 
 class BasePartiesTest(BaseTest):
@@ -46,7 +48,6 @@ class TestPartiesStatusCodes(BasePartiesTest):
         party_id = new_party.json['data'][0]["id"]
         response = self.delete(party_id)
         self.assertEqual(response.status_code, 200)
-        print(response.json['data'][0]['message'])
         self.assertIn("deleted successfully", response.json['data'][0]['message'])
 
     def test_edit_party_name(self):
@@ -65,6 +66,37 @@ class TestPartiesStatusCodes(BasePartiesTest):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json['data'][-1], self.party_data)
 
+class TestPartyModel(unittest.TestCase):         
+    """tests the party model"""
+    Party = PoliticalParty()
+    def test_create_office(self):
+        """tests whether party model can create offices"""
+        self.Party.parties.clear()
+        self.Party.create_party(** BasePartiesTest.party_data)
+        self.assertEqual(len(self.Party.parties), 1)
+        self.assertEqual(self.Party.parties.get(254), BasePartiesTest.party_data)
+
+    def test_get_all_parties(self):
+        """tests whether the party model gets all parties"""
+        self.Party.parties.clear()
+        self.Party.create_party(** BasePartiesTest.party_data)
+        self.Party.create_party(** BasePartiesTest.party_data2)
+        self.assertEqual(len(self.Party.get_all_parties()), 2)
+
+    def test_get_party_by_id(self):
+        """tests whether the party model can get a specific party by name"""
+        res = self.Party.get_party_by_id(BasePartiesTest.party_data.get('id'))
+        self.assertEqual(res, BasePartiesTest.party_data)
+
+    def test_get_party_by_name(self):
+        """tests whether the party model can get a specific party by name"""
+        res = self.Party.get_party_by_name(BasePartiesTest.party_data.get('name'))
+        self.assertEqual(res, BasePartiesTest.party_data)
+
+    def test_null_if_no_party(self):
+        res = self.Party.get_party_by_name("random name")
+        self.assertEqual(res, {})
+
 class TestValidation(BasePartiesTest):
     def test_get_empty_db(self):
         response = self.get()
@@ -75,9 +107,19 @@ class TestValidation(BasePartiesTest):
         response = self.get_single(self.party_data.get('id'))
         self.assertTrue(response.status_code, 404)
 
-    def test_create_existing_party(self):
+    def test_create_existing_party_id(self):
         self.post(self.party_data)
         response = self.post(self.party_data)
+        self.assertTrue(response.status_code, 409)
+        self.assertIn("already exists", response.json['error'])
+    
+    def test_create_existing_party_name(self):
+        self.post(self.party_data)
+        #only change the id
+        test_data = self.party_data
+        test_data['id'] = 234
+        print(test_data)
+        response = self.post(test_data)
         self.assertTrue(response.status_code, 409)
         self.assertIn("already exists", response.json['error'])
 

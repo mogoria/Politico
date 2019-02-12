@@ -34,6 +34,13 @@ class PoliticalParty():
         """returns dictionary if present and empty dictionary if absent"""
         return self.parties.get(id, {})
 
+    def get_party_by_name(self, name):
+        """returns office if present and empty if absent"""
+        found_parties = [party for party in self.parties.values() if party.get('name') == name]
+        if found_parties:
+            return found_parties[0]
+        return {}
+
     def delete_party_by_id(self, id):
         """returns True if successful and False if unsuccessful"""
         try:
