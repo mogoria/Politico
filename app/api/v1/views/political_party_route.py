@@ -22,11 +22,22 @@ def post_political_party():
             }
         null_fields = utils.check_null(new_political_party)
         if not null_fields:
-            if PARTY.get_party_by_id(new_political_party.get('id')) or PARTY.get_party_by_name(new_political_party.get('name')):
+            message = ""
+            if PARTY.get_party_by_id(data['id']) and PARTY.get_party_by_id(data['name']):
+                message = "A party already exists with that name and id"
+            elif PARTY.get_party_by_id(data.get('id')):
                 #party already exists
-                return utils.util_response(409, "Party already exists")
-            PARTY.create_party(**utils.sanitise(new_political_party))
-            return make_response(jsonify(utils.wrap_response(201, new_political_party)), 201)
+                message = "A party already exists with that name"
+            elif PARTY.get_party_by_name(data.get('name')):
+                #party already exists
+                message = "A party already exists with that id"
+            
+            if not message:
+                PARTY.create_party(**utils.sanitise(new_political_party))
+                #return utils.make_response(201, new_political_party)
+                return utils.util_response(201,new_political_party)
+
+            return utils.util_response(409, message)
         return utils.util_response(400, "incorrect format. Please provide valid fields for: {}"
                                       .format(", ".join(null_fields)))
 

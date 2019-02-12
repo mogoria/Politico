@@ -19,7 +19,7 @@ class PoliticalOffice:
             }
             Offices.append(new_office)
             return new_office
-
+            
     def get_all_offices(self):
         """returns list of dictionaries of all offices"""
         return Offices
