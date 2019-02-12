@@ -20,30 +20,32 @@ def post_political_party():
             'hqAddress' : data['hqAddress'],
             'logoUrl' : data['logoUrl']
             }
-        null_fields = utils.check_null(new_political_party)
-        if not null_fields:
-            message = ""
-            if PARTY.get_party_by_id(data['id']) and PARTY.get_party_by_id(data['name']):
-                message = "A party already exists with that name and id"
-            elif PARTY.get_party_by_id(data.get('id')):
-                #party already exists
-                message = "A party already exists with that name"
-            elif PARTY.get_party_by_name(data.get('name')):
-                #party already exists
-                message = "A party already exists with that id"
-            
-            if not message:
-                PARTY.create_party(**utils.sanitise(new_political_party))
-                #return utils.make_response(201, new_political_party)
-                return utils.util_response(201,new_political_party)
-
-            return utils.util_response(409, message)
-        return utils.util_response(400, "incorrect format. Please provide valid fields for: {}"
-                                      .format(", ".join(null_fields)))
 
     except KeyError:
         return utils.util_response(400, 
                                    "incorrect format. Fields include id, name, hqAddress and logoUrl")
+
+
+    null_fields = utils.check_null(new_political_party)
+    if not null_fields:
+        message = ""
+        if PARTY.get_party_by_id(data['id']) and PARTY.get_party_by_id(data['name']):
+            message = "A party already exists with that name and id"
+        elif PARTY.get_party_by_id(data.get('id')):
+            #party already exists
+            message = "A party already exists with that name"
+        elif PARTY.get_party_by_name(data.get('name')):
+            #party already exists
+            message = "A party already exists with that id"
+        
+        if not message:
+            PARTY.create_party(**utils.sanitise(new_political_party))
+            #return utils.make_response(201, new_political_party)
+            return utils.util_response(201,new_political_party)
+
+        return utils.util_response(409, message)
+    return utils.util_response(400, "incorrect format. Please provide valid fields for: {}"
+                                    .format(", ".join(null_fields)))                                   
 
 @v1_bp.route('/parties', methods=['GET'])
 def get_all_political_parties():
