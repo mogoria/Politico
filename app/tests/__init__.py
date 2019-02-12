@@ -2,7 +2,7 @@ import unittest
 import json
 from app import create_app
 from app.api.v1.models.political_party_model import PoliticalParty
-from app.api.v1.views.political_office_route import OFFICE
+from app.api.v1.models.political_office_model import Offices
 from app.api.v1.views.political_party_route import PARTY
 
 
@@ -14,6 +14,7 @@ class BaseTest(unittest.TestCase):
         self.app = create_app(config_name='testing')
         self.app.testing = True
         self.client = self.app.test_client()
+        self.Offices = Offices
 
     def post(self, data):
         """returns response from a post request"""
@@ -37,5 +38,5 @@ class BaseTest(unittest.TestCase):
     def tearDown(self):
         """cleans up after test has run"""
         self.app.testing = False
-        OFFICE.Offices.clear()
+        self.Offices.clear()
         PARTY.parties.clear()

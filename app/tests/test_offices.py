@@ -21,28 +21,32 @@ class BaseOfficeClass(InitOffice, BaseTest):
     """sets the url path for office endpoints"""
     path = "/api/v1/offices"
 
-class TestOfficeModel(InitOffice, unittest.TestCase):         
+class TestOfficeModel(BaseOfficeClass):         
     """tests the office model"""
     def test_create_office(self):
         """tests whether office model can create office"""
         self.Office.create_office(** sanitise(self.office1))
-        self.assertEqual(len(self.Office.Offices), 1)
-        self.assertEqual(self.Office.Offices[0], sanitise(self.office1))
+        self.assertEqual(len(self.Offices), 1)
+        self.assertEqual(self.Offices[0], sanitise(self.office1))
 
     def test_get_all_offices(self):
         """tests whether the office model gets all offices"""
-        self.Office.Offices.clear()
+        self.Offices.clear()
         self.Office.create_office(** sanitise(self.office1))
         self.Office.create_office(** sanitise(self.office2))
         self.assertEqual(len(self.Office.get_all_offices()), 2)
 
     def test_get_office_by_id(self):
         """tests whether the office model can get a specific office"""
-        res = self.Office.get_office_by_id(22)
-        self.assertEqual(res, sanitise(self.office2))
+        print(sanitise(self.office1))
+        self.Office.create_office(** sanitise(self.office1))
+        res = self.Office.get_office_by_id(self.office1.get('id'))
+        res = desanitise(res)
+        self.assertEqual(res, self.office1)
 
     def test_get_office_by_name(self):
         """tests whether the office model can get a specific office by name"""
+        self.Office.create_office(** sanitise(self.office1))
         res = self.Office.get_office_by_name(self.office1.get('name'))
         self.assertEqual(res, sanitise(self.office1))
 
@@ -53,6 +57,7 @@ class TestOfficeModel(InitOffice, unittest.TestCase):
 class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
     def test_create_office(self):
         """tests the endpoint to create an office"""
+        self.Offices.clear()
         resp = self.post(self.office1)
         self.assertEqual(resp.status_code, 201)
 
@@ -61,14 +66,14 @@ class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
         self.post(self.office2)
         resp = self.get()
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json['data'][-1], sanitise(self.office2))
+        self.assertEqual(resp.json['data'][-1], self.office2)
 
     def test_get_specific_office(self):
         new_office = self.post(self.office2)
-        office_id = new_office.json['data'][0]['_id']
+        office_id = new_office.json['data'][0]['id']
         resp = self.get_single(office_id)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json['data'][0], new_office.json['data'][0])
+        self.assertEqual(desanitise(resp.json['data'][0]), new_office.json['data'][0])
 
 class TestValidation(BaseOfficeClass):
     def test_missing_key(self):
