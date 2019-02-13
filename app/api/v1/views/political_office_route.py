@@ -12,37 +12,27 @@ def create_offices():
         first checks whether it exists
     """
     data = request.get_json(force=True)
-    sample_data = {
-        "type": "office type",
-        "name": "office name"
-    }
-    valid_fields = sample_data.keys()
+    valid_fields = ['type', 'name']
     response = {}
-
-    if utils.check_valid_fields(data, valid_fields) is False:
-        response = {
-            "status":400,
-            "error": "incorrect format, please provide valid fields. {}"
+    
+    if valid_fields != list(data.keys()):
+        response["status"] = 400
+        response["error"] = "incorrect format, please provide valid fields. {}"\
                      .format(", ".join(valid_fields))
-        }
-    elif utils.check_valid_type(data, sample_data):
-        response = {
-            "status":400,
-            "error": "incorrect format, please provide valid types for: {}".format(
-                ", ".join(
-                    ["{}:{}".format(key, type(value)) for key, value in sample_data.items()]
-                    )
-                )
-        }
-    elif OFFICE.get_office_by_name(data['name']):
-        response = {
-            "status":400,
-            "error": "An office already exists with that name"
-        }
+    else:
+
+        validator = utils.OfficeValidator(**data)
+        error = validator.validate()
+        if error:
+            response['status'] = 400
+            response['error'] = error
     
     if not response:
         created_office = OFFICE.create_office(**utils.sanitise(data))
-        return utils.util_response(201, utils.desanitise(created_office))
+        if created_office:
+            return utils.util_response(201, utils.desanitise(created_office))
+        response['status'] = 409
+        response['error'] = "An office already exists with that name"
     return utils.util_response(response.get('status'), response.get('error'))
 
 

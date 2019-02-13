@@ -8,12 +8,17 @@ class TestValidator(unittest.TestCase):
             "logoUrl": "photo.com",
             "hqAddress": "Nairobi"
         }
+
+        self.valid_office = {
+            "type": "legislative",
+            "name": "office"
+        }
         
 
 class TestPartyValidator(TestValidator):
     def test_valid_party(self):
         validator = PartyValidator(** self.valid_party)
-        self.assertTrue(validator.validate(), [])
+        self.assertEqual(validator.validate(), [])
 
     def test_blank_name(self):
         values = self.valid_party
@@ -28,3 +33,15 @@ class TestPartyValidator(TestValidator):
         print(values)
         validator = PartyValidator(** values)
         self.assertIn("Please enter a valid name", validator.validate())
+
+class TestOfficeValidator(TestValidator):
+    def test_valid_party(self):
+        validator = OfficeValidator(**self.valid_office)
+        self.assertEqual(validator.validate(), [])
+
+    def test_invalid_type(self):
+        office = self.valid_office
+        office['type'] = 'weird type'
+        validator = OfficeValidator(**office)
+        self.assertIn('enter a valid type', validator.validate())
+        

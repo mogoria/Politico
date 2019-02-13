@@ -7,12 +7,16 @@ class InitOffice:
     """sets mock data to be used for testing"""
     Office = PoliticalOffice()
     office1 = {
-        "type":"type1",
-        "name":"office1"
+        "type":"legislative",
+        "name":"largeoffice"
     }
     office2 = {
-        "type":"type2",
-        "name":"office2"
+        "type":"federal",
+        "name":"big office"
+    }
+    office3 = {
+        "type":"state",
+        "name":"massive office"
     }
 
 class BaseOfficeClass(InitOffice, BaseTest):
@@ -117,6 +121,7 @@ class TestValidation(BaseOfficeClass):
         self.post(self.office1)
         resp = self.post(self.office1)
         self.assertTrue(resp.status_code, 409)
+        print(resp.json)
         self.assertIn('already exists', resp.json['error'])
 
     def test_invalid_type(self):
@@ -129,3 +134,9 @@ class TestValidation(BaseOfficeClass):
         self.assertEqual(post.status_code, 400)
         self.assertIn("incorrect format", post.json['error'])
 
+    def test_invalid_office_type(self):
+        office = self.office1
+        office['type'] = "random type"
+        post = self.post(office)
+        self.assertEqual(post.status_code, 400)
+        self.assertIn('enter a valid type', post.json['error'])

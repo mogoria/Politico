@@ -85,9 +85,12 @@ class Validator:
             return False
 
     def is_str(self, value):
-        if isinstance(value, str):
-            return value.isalpha()
-        return False
+        if self.is_int(value):
+            return False
+        for char in value:
+            if not (char.isalpha() or char == " "):
+                return False
+        return True
 
     def is_int(self, value):
         try:
@@ -127,8 +130,8 @@ class OfficeValidator(Validator):
             return self.errors
         elif self.mass_check_type(type_list, values):
             return self.errors
-        elif not self.check_office_type(type):
-            return "Please enter a valid type {}".format(",".join(self.office_types))
+        elif not self.check_office_type(self.type):
+            return "Please enter a valid type {}".format(", ".join(self.office_types))
         return []
 
 
