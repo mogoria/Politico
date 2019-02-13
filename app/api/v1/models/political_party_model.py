@@ -6,9 +6,9 @@ class PoliticalParty():
         """Save new party to parties dictionary"""
         new_party = dict()
         #check if party exists
-        if not self.get_party_by_id(_id):            
+        if not self.get_party_by_name(_name):            
             new_party = {
-                "_id":_id,
+                "_id": _id,
                 "_name": _name,
                 "_hqAddress": _hqAddress,
                 "_logoUrl": _logoUrl
@@ -55,3 +55,7 @@ class PoliticalParty():
                     Parties.remove(party)
                     return True
         return False
+    def get_id(self):
+        if not Parties:
+            return 1
+        return Parties[-1] + 1

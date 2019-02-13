@@ -61,3 +61,100 @@ def desanitise(dic):
         #omit the underscore from the key name
         new_dic[key[1:]] = value
     return new_dic
+
+class Validator:
+    office_types = ["federal", "legislative", "state", "local government"]
+
+    def __init__(self):
+        self.errors = []
+
+    def check_office_type(self, office):
+        if office in self.office_types:
+            return True
+        return False
+
+    def is_null(self, value):
+        if isinstance(value, str):
+            value = value.strip()
+        return value == ""
+
+    def is_url(self, value):
+        if "." in value:
+            return True 
+        else:
+            return False
+
+    def is_str(self, value):
+        if isinstance(value, str):
+            return value.isalpha()
+        return False
+
+    def is_int(self, value):
+        try:
+            int(value)
+        except ValueError:
+            return False
+        return True
+
+    def mass_non_null(self, null_list):
+        for key, value in null_list.items():
+                if self.is_null(value):
+                    self.errors.append("Please enter a value for {}".format(key))
+        return self.errors
+
+    def mass_check_type(self, type_list, values):
+        for k, v in type_list.items():
+            if not v(values.get(k)):
+                self.errors.append("Please enter a valid {}".format(k))
+        return self.errors
+
+class OfficeValidator(Validator):
+    def __init__(self, type, name):
+        super().__init__()
+        self.type = type
+        self.name = name
+
+    def validate(self):
+        values = {
+            "type": self.type,
+            "name": self.name
+        }
+        type_list = {
+            "type": self.is_str,
+            "name": self.is_str
+        }
+        if self.mass_non_null(values):
+            return self.errors
+        elif self.mass_check_type(type_list, values):
+            return self.errors
+        elif not self.check_office_type(type):
+            return "Please enter a valid type {}".format(",".join(self.office_types))
+        return []
+
+
+
+class PartyValidator(Validator):
+    def __init__(self, name, hqAddress, logoUrl):
+        super().__init__()
+        self.name = name
+        self.hqAddress = hqAddress
+        self.logoUrl = logoUrl
+
+    def validate(self):
+        values = {
+            "name": self.name,
+            "hqAddress": self.hqAddress,
+            "logoUrl": self.logoUrl
+        }
+        type_list = {
+            "name": self.is_str,
+            "hqAddress": self.is_str,
+            "logoUrl": self.is_url
+        }
+
+        if(self.mass_non_null(values)):
+            return self.errors
+        elif (self.mass_check_type(type_list, values)):
+            return self.errors
+        return []
+        
