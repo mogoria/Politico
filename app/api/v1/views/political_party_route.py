@@ -64,9 +64,16 @@ def get_specific_political_party(party_id):
 @v1_bp.route("/parties/<int:party_id>/name", methods=["PATCH"])
 def edit_specific_political_party(party_id):
     """endpoint to edit specific political party"""
-    try:
-        data = request.get_json(force=True)
+    valid_fields = ['name']
+    data = request.get_json(force=True)
+
+    if valid_fields == list(data.keys()):
         updated_name = data['name']
+        #check if name is a string
+        validator = utils.Validator()
+        if not validator.is_str(updated_name):
+            return utils.util_response(400, "Please enter a valid name")
+
         party = utils.desanitise(PARTY.get_party_by_id(party_id))
         if party:
             party['name'] = updated_name
@@ -74,9 +81,9 @@ def edit_specific_political_party(party_id):
             if response:
                 return jsonify(utils.wrap_response(200, response)), 200
         return jsonify(utils.wrap_response(404, "party not found")), 404
-    except KeyError:
-        return jsonify(utils.wrap_response(400, "incorrect format. " +
-                                           "Fields include name")), 400
+    
+    return jsonify(utils.wrap_response(400, "incorrect format. " +
+                                        "Fields include name")), 400
 
 @v1_bp.route("/parties/<int:party_id>", methods=['DELETE'])
 def delete_political_party(party_id):

@@ -57,9 +57,10 @@ class TestPartiesStatusCodes(BasePartiesTest):
         """tests endpoint to change name of a party"""
         new_party = self.post(self.party_data2)
         party_id = new_party.json['data'][0]["id"]
-        response = self.patch(party_id, self.party_data2)
+        response = self.patch(party_id, {"name":"new name"})
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.party_data2.get('name'), response.json["data"][0]['name'])
+        self.assertIn("new name", response.json["data"][0]['name'])
+
 
     def test_get_all_parties(self):
         """tests endpoint to get all parties"""
@@ -113,8 +114,9 @@ class TestValidation(BasePartiesTest):
         self.assertIn("not found", response.json['error'])
 
     def test_get_non_existent_party(self):
-        response = self.get_single(self.party_data.get('id'))
+        response = self.get_single(987439)
         self.assertTrue(response.status_code, 404)
+        self.assertIn("not found", response.json['error'])
 
     
     def test_create_existing_party_name(self):
@@ -129,10 +131,24 @@ class TestValidation(BasePartiesTest):
         response = self.patch(self.party_data2.get("id"), {"name":"new name"})
         self.assertTrue(response.status_code, 404)
 
-    def test_edit_invalid_request(self):
+    def test_edit_invalid_key(self):
         self.post(self.party_data)
         response = self.patch(self.party_data.get('id'), {"extra_field":"value"})
         self.assertTrue(400, response.status_code)
+
+    def test_edit_name_with_more_keys(self):
+        new_party = self.post(self.party_data2)
+        party_id = new_party.json['data'][0]["id"]
+        response = self.patch(party_id, self.party_data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("incorrect format", response.json['error'])
+
+    def test_edit_with_invalid_name(self):
+        new_party = self.post(self.party_data2)
+        party_id = new_party.json['data'][0]["id"]
+        response = self.patch(party_id, {"name":200})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("enter a valid name", response.json['error'])
 
     def test_create_invalid_party(self):
         invalid_party = {

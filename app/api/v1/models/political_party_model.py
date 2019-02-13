@@ -35,9 +35,10 @@ class PoliticalParty():
 
     def get_party_by_id(self, _id):
         """returns dictionary if present and empty dictionary if absent"""
-        found_party = [party for party in Parties if party.get('_id') == _id]
-        if found_party:
-            return found_party[0]
+        if Parties:
+            found_party = [party for party in Parties if party.get('_id') == _id]
+            if found_party:
+                return found_party[0]
         return {}
 
     def get_party_by_name(self, name):
