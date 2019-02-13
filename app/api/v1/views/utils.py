@@ -1,22 +1,22 @@
 """contains helper functions to routes"""
 from flask import make_response
 from flask import jsonify
-def wrap_response(status_code, data):
+def wrap_response(status_code, data, role):
     """wraps response according to api specification"""
     if 200 <= status_code < 300:
         return {
-            "status":status_code,
-            "data":data if isinstance(data, list) else [data]
+            role:data if isinstance(data, list) else [data],
+            "status":status_code
         }
     return {
         "status":status_code,
         "error":data
     }
 
-def util_response(status_code, data):
+def util_response(status_code, data, role):
     """wraps response in a make_response block"""
     return make_response(
-        jsonify(wrap_response(status_code, data)), status_code
+        jsonify(wrap_response(status_code, data, role)), status_code
     )
 
 def check_null(data):
@@ -149,4 +149,3 @@ class PartyValidator(Validator):
         if self.mass_check_type(type_list, values):
             return self.errors
         return []
-        
