@@ -13,9 +13,10 @@ def create_offices():
     """
     data = request.get_json(force=True)
     valid_fields = ['type', 'name']
+    request_fields = list(data.keys())
     response = {}
-    
-    if valid_fields != list(data.keys()):
+
+    if len(request_fields) != len(valid_fields) or set(valid_fields) != set(request_fields):
         response["status"] = 400
         response["error"] = "incorrect format, please provide valid fields. {}"\
                      .format(", ".join(valid_fields))
@@ -26,7 +27,7 @@ def create_offices():
         if error:
             response['status'] = 400
             response['error'] = error
-    
+
     if not response:
         created_office = OFFICE.create_office(**utils.sanitise(data))
         if created_office:

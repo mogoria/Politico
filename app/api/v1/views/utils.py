@@ -20,6 +20,7 @@ def util_response(status_code, data):
     )
 
 def check_null(data):
+    """given a dictionary, returns a list of null fields"""
     null_fields = []
     for field, value in data.items():
         if not value:
@@ -27,12 +28,14 @@ def check_null(data):
     return null_fields
 
 def sanitise(dic):
+    """Adds underscores to keys in dictionary"""
     new_dic = dict()
     for key, value in dic.items():
         new_dic["_{}".format(key)] = value
     return new_dic
 
 def desanitise(dic):
+    """Removes underscores from dictionary"""
     new_dic = dict()
     for key, value in dic.items():
         #omit the underscore from the key name
@@ -46,22 +49,24 @@ class Validator:
         self.errors = []
 
     def check_office_type(self, office):
+        """searches if value is in the office_types list"""
         if office in self.office_types:
             return True
         return False
 
     def is_null(self, value):
+        """checks if a value is null"""
         if isinstance(value, str):
             value = value.strip()
         return value == ""
 
     def is_url(self, value):
-        if "." in value:
-            return True 
-        else:
-            return False
+        """checks wheter a url is valid"""
+        is_url = '.' in value
+        return is_url
 
     def is_str(self, value):
+        """Returns True if value isn't a number and contains letters and spaces but not null"""
         if self.is_int(value) or self.is_null(value):
             return False
         for char in value:
@@ -70,6 +75,7 @@ class Validator:
         return True
 
     def is_int(self, value):
+        """Returns true if a value is an integer"""
         try:
             int(value)
         except ValueError:
@@ -77,24 +83,28 @@ class Validator:
         return True
 
     def mass_non_null(self, null_list):
+        """Checks a dictionary to make sure that the values are not null"""
         for key, value in null_list.items():
-                if self.is_null(value):
-                    self.errors.append("Please enter a value for {}".format(key))
+            if self.is_null(value):
+                self.errors.append("Please enter a value for {}".format(key))
         return self.errors
 
     def mass_check_type(self, type_list, values):
-        for k, v in type_list.items():
-            if not v(values.get(k)):
-                self.errors.append("Please enter a valid {}".format(k))
+        """Checks a dictionary of values to see whether they are of the type provided in typelist"""
+        for key, value in type_list.items():
+            if not value(values.get(key)):
+                self.errors.append("Please enter a valid {}".format(key))
         return self.errors
 
 class OfficeValidator(Validator):
+    """validates office input"""
     def __init__(self, type, name):
         super().__init__()
         self.type = type
         self.name = name
 
     def validate(self):
+        """Returns an error if validation fails found otherwise empty list"""
         values = {
             "type": self.type,
             "name": self.name
@@ -108,12 +118,13 @@ class OfficeValidator(Validator):
         elif self.mass_check_type(type_list, values):
             return self.errors
         elif not self.check_office_type(self.type):
-            return "Please enter a valid type {}".format(", ".join(self.office_types))
+            return "Please enter a valid type either: {}".format(", ".join(self.office_types))
         return []
 
 
 
 class PartyValidator(Validator):
+    """Validates party fields"""
     def __init__(self, name, hqAddress, logoUrl):
         super().__init__()
         self.name = name
@@ -121,6 +132,7 @@ class PartyValidator(Validator):
         self.logoUrl = logoUrl
 
     def validate(self):
+        """Returns an error if validation fails found otherwise empty list"""
         values = {
             "name": self.name,
             "hqAddress": self.hqAddress,
@@ -132,9 +144,9 @@ class PartyValidator(Validator):
             "logoUrl": self.is_url
         }
 
-        if(self.mass_non_null(values)):
+        if self.mass_non_null(values):
             return self.errors
-        elif (self.mass_check_type(type_list, values)):
+        if self.mass_check_type(type_list, values):
             return self.errors
         return []
         

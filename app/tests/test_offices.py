@@ -87,7 +87,6 @@ class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
 class TestValidation(BaseOfficeClass):
     def test_missing_key(self):
         data = {
-            "id":254,
             "":"type2",
             "name":"office2"
         }
@@ -97,7 +96,6 @@ class TestValidation(BaseOfficeClass):
 
     def test_more_keys(self):
         data = {
-            "id": 32,
             "name":"office3",
             "type": "type13",
             "extra key": "value"
@@ -126,13 +124,12 @@ class TestValidation(BaseOfficeClass):
 
     def test_invalid_type(self):
         invalid_data = {
-            "id":"123",
             "name":234,
             "type": False
         }
         post = self.post(invalid_data)
         self.assertEqual(post.status_code, 400)
-        self.assertIn("incorrect format", post.json['error'])
+        self.assertIn("Please enter a valid name", post.json['error'])
 
     def test_invalid_office_type(self):
         office = self.office1

@@ -7,7 +7,6 @@ class PoliticalOffice:
 
     def create_office(self, _type, _name):
         """adds office to office list and returns newly created office"""
-        
         if self.get_office_by_name(_name):
             #if office already exists, return empty list
             return {}
@@ -19,7 +18,7 @@ class PoliticalOffice:
             }
             Offices.append(new_office)
             return new_office
-            
+
     def get_all_offices(self):
         """returns list of dictionaries of all offices"""
         return Offices
@@ -39,6 +38,6 @@ class PoliticalOffice:
         return {}
 
     def generate_id(self):
-        if Offices:
-            return Offices[-1].get('id')
-        return 1
+        if not Offices:
+            return 1
+        return Offices[-1].get('_id') + 1

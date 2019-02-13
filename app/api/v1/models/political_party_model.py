@@ -6,7 +6,7 @@ class PoliticalParty():
         """Save new party to parties dictionary"""
         new_party = dict()
         #check if party exists
-        if not self.get_party_by_name(_name):            
+        if not self.get_party_by_name(_name):
             new_party = {
                 "_id": self.generate_id(),
                 "_name": _name,
@@ -33,20 +33,24 @@ class PoliticalParty():
         """returns a list of party objects"""
         return Parties
 
-    def get_party_by_id(self, _id):
-        """returns dictionary if present and empty dictionary if absent"""
+    def get_party(self, search_term):
+        """finds a party based on the term given"""
         if Parties:
-            found_party = [party for party in Parties if party.get('_id') == _id]
+            if isinstance(search_term, int):
+                field = '_id'
+            else:
+                field = '_name'
+            found_party = [party for party in Parties if party.get(field) == search_term]
             if found_party:
                 return found_party[0]
         return {}
+    def get_party_by_id(self, _id):
+        """returns dictionary if present and empty dictionary if absent"""
+        return self.get_party(_id)
 
     def get_party_by_name(self, name):
         """returns office if present and empty if absent"""
-        found_party = [party for party in Parties if party.get('_name') == name]
-        if found_party:
-            return found_party[0]
-        return {}
+        return self.get_party(name)
 
     def delete_party_by_id(self, _id):
         """returns True if successful and False if unsuccessful"""
