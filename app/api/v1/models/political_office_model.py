@@ -5,15 +5,15 @@ class PoliticalOffice:
     stores political offices in list
     """
 
-    def create_office(self, _id, _type, _name):
+    def create_office(self, _type, _name):
         """adds office to office list and returns newly created office"""
         
-        if self.get_office_by_id(_id) or self.get_office_by_name(_name):
+        if self.get_office_by_name(_name):
             #if office already exists, return empty list
             return {}
         else:
             new_office = {
-                '_id':_id,
+                '_id': self.generate_id(),
                 '_type': _type,
                 '_name': _name
             }
@@ -37,3 +37,8 @@ class PoliticalOffice:
         if office:
             return office[0]
         return {}
+
+    def generate_id(self):
+        if Offices:
+            return Offices[-1].get('id')
+        return 1

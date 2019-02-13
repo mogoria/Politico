@@ -7,12 +7,10 @@ class InitOffice:
     """sets mock data to be used for testing"""
     Office = PoliticalOffice()
     office1 = {
-        "id":76,
         "type":"type1",
         "name":"office1"
     }
     office2 = {
-        "id":22,
         "type":"type2",
         "name":"office2"
     }
@@ -27,6 +25,8 @@ class TestOfficeModel(BaseOfficeClass):
         """tests whether office model can create office"""
         self.Office.create_office(** sanitise(self.office1))
         self.assertEqual(len(self.Offices), 1)
+        office = self.Offices[0]
+        del office['_id']
         self.assertEqual(self.Offices[0], sanitise(self.office1))
 
     def test_get_all_offices(self):
@@ -38,15 +38,19 @@ class TestOfficeModel(BaseOfficeClass):
 
     def test_get_office_by_id(self):
         """tests whether the office model can get a specific office"""
-        self.Office.create_office(** sanitise(self.office1))
-        res = self.Office.get_office_by_id(self.office1.get('id'))
+        new_office = self.Office.create_office(** sanitise(self.office1))
+        office_id = new_office['_id']
+        res = self.Office.get_office_by_id(office_id)
         res = desanitise(res)
+        #remove id attribut in order to compare
+        del res['id']
         self.assertEqual(res, self.office1)
 
     def test_get_office_by_name(self):
         """tests whether the office model can get a specific office by name"""
         self.Office.create_office(** sanitise(self.office1))
         res = self.Office.get_office_by_name(self.office1.get('name'))
+        del res['_id']
         self.assertEqual(res, sanitise(self.office1))
 
     def test_null_if_no_office(self):
@@ -65,6 +69,8 @@ class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
         self.post(self.office2)
         resp = self.get()
         self.assertEqual(resp.status_code, 200)
+        last_entry = resp.json['data'][-1]
+        del last_entry['id']
         self.assertEqual(resp.json['data'][-1], self.office2)
 
     def test_get_specific_office(self):

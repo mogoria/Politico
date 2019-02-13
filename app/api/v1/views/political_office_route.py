@@ -13,7 +13,6 @@ def create_offices():
     """
     data = request.get_json(force=True)
     sample_data = {
-        "id":12,
         "type": "office type",
         "name": "office name"
     }
@@ -35,21 +34,12 @@ def create_offices():
                     )
                 )
         }
-    elif OFFICE.get_office_by_id(sample_data['id']) and OFFICE.get_office_by_name(data['name']):
-        response = {
-            "status":400,
-            "error": "An office already exists with that name and id"
-        }
-    elif OFFICE.get_office_by_id(sample_data['id']):
-        response = {
-            "status":400,
-            "error": "An office already exists with that id"
-        }
     elif OFFICE.get_office_by_name(data['name']):
         response = {
             "status":400,
             "error": "An office already exists with that name"
         }
+    
     if not response:
         created_office = OFFICE.create_office(**utils.sanitise(data))
         return utils.util_response(201, utils.desanitise(created_office))
