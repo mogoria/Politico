@@ -15,7 +15,6 @@ def post_political_party():
 
     try:
         new_political_party = {
-            'id' : data['id'],
             'name' : data['name'],
             'hqAddress' : data['hqAddress'],
             'logoUrl' : data['logoUrl']
@@ -23,25 +22,21 @@ def post_political_party():
 
     except KeyError:
         return utils.util_response(400, 
-                                   "incorrect format. Fields include id, name, hqAddress and logoUrl")
+                                   "incorrect format. Fields include name, hqAddress and logoUrl")
 
 
     null_fields = utils.check_null(new_political_party)
     if not null_fields:
         message = ""
-        if PARTY.get_party_by_id(data['id']) and PARTY.get_party_by_id(data['name']):
-            message = "A party already exists with that name and id"
-        elif PARTY.get_party_by_id(data.get('id')):
+        if PARTY.get_party_by_name(data.get('name')):
             #party already exists
             message = "A party already exists with that name"
-        elif PARTY.get_party_by_name(data.get('name')):
-            #party already exists
-            message = "A party already exists with that id"
         
         if not message:
-            PARTY.create_party(**utils.sanitise(new_political_party))
-            #return utils.make_response(201, new_political_party)
-            return utils.util_response(201,new_political_party)
+            created_party = PARTY.create_party(**utils.sanitise(new_political_party))
+            if created_party:
+                created_party = utils.desanitise(created_party)
+                return utils.util_response(201,created_party)
 
         return utils.util_response(409, message)
     return utils.util_response(400, "incorrect format. Please provide valid fields for: {}"

@@ -2,13 +2,13 @@ Parties = []
 class PoliticalParty():
     """A class used to store and retrieve political parties"""
 
-    def create_party(self, _id, _name, _hqAddress, _logoUrl):
+    def create_party(self, _name, _hqAddress, _logoUrl):
         """Save new party to parties dictionary"""
         new_party = dict()
         #check if party exists
         if not self.get_party_by_name(_name):            
             new_party = {
-                "_id": _id,
+                "_id": self.generate_id(),
                 "_name": _name,
                 "_hqAddress": _hqAddress,
                 "_logoUrl": _logoUrl
@@ -55,7 +55,7 @@ class PoliticalParty():
                     Parties.remove(party)
                     return True
         return False
-    def get_id(self):
+    def generate_id(self):
         if not Parties:
             return 1
-        return Parties[-1] + 1
+        return Parties[-1].get('_id') + 1
