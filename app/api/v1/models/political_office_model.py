@@ -1,29 +1,43 @@
+Offices = []
 """political office model class"""
 class PoliticalOffice:
     """Model class for political offices
     stores political offices in list
     """
 
-    def __init__(self):
-        self.Offices = []
-
-    def create_office(self, id, type, name):
+    def create_office(self, _type, _name):
         """adds office to office list and returns newly created office"""
-        new_office = locals()
-        del new_office['self']
-        if self.get_office(new_office.get('id')):
+        if self.get_office_by_name(_name):
             #if office already exists, return empty list
             return {}
-        self.Offices.append(new_office)
-        return new_office
+        else:
+            new_office = {
+                '_id': self.generate_id(),
+                '_type': _type,
+                '_name': _name
+            }
+            Offices.append(new_office)
+            return new_office
 
     def get_all_offices(self):
         """returns list of dictionaries of all offices"""
-        return self.Offices
+        return Offices
 
-    def get_office(self, office_id):
+    def get_office_by_id(self, office_id):
         """searches an office by id and returns it"""
-        found_office = [office for office in self.Offices if office.get('id') == office_id]
+        found_office = [office for office in Offices if office.get('_id') == office_id]
         if found_office:
             return found_office[0]
         return {}
+
+    def get_office_by_name(self, office_name):
+        """searches an office by name and returns it"""
+        office = [office for office in Offices if office.get("_name") == office_name]
+        if office:
+            return office[0]
+        return {}
+
+    def generate_id(self):
+        if not Offices:
+            return 1
+        return Offices[-1].get('_id') + 1

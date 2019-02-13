@@ -1,42 +1,66 @@
+Parties = []
 class PoliticalParty():
     """A class used to store and retrieve political parties"""
-    def __init__(self):
-        self.parties = {}
 
-    def create_party(self, id, name, hqAddress, logoUrl):
+    def create_party(self, _name, _hqAddress, _logoUrl):
         """Save new party to parties dictionary"""
         new_party = dict()
-        new_party['id'] = id
-        new_party['name'] = name
-        new_party['hqAddress'] = hqAddress
-        new_party['logoUrl'] = logoUrl
-
-        self.parties[id] = new_party
+        #check if party exists
+        if not self.get_party_by_name(_name):
+            new_party = {
+                "_id": self.generate_id(),
+                "_name": _name,
+                "_hqAddress": _hqAddress,
+                "_logoUrl": _logoUrl
+            }
+            Parties.append(new_party)
         return new_party
 
-    def update_party(self, id, name, hqAddress, logoUrl):
+    def update_party(self, _id, _name, _hqAddress=None, _logoUrl=None):
         """Updates a party by searching the id provided"""
-        if self.parties:
-            if id in self.parties:
-                self.parties[id]['id'] = id
-                self.parties[id]['name'] = name
-                self.parties[id]['hqAddress'] = hqAddress
-                self.parties[id]['logoUrl'] = logoUrl
-                return self.parties[id]
+        if Parties:
+            for party in Parties:
+                if party.get('_id') == _id:
+                    party['_name'] = _name
+                    return {
+                        "id": party.get('_id'),
+                        "name": _name
+                    }
         return {}
 
 
     def get_all_parties(self):
         """returns a list of party objects"""
-        return list(self.parties.values())
+        return Parties
 
-    def get_party_by_id(self, id):
+    def get_party(self, search_term):
+        """finds a party based on the term given"""
+        if Parties:
+            if isinstance(search_term, int):
+                field = '_id'
+            else:
+                field = '_name'
+            found_party = [party for party in Parties if party.get(field) == search_term]
+            if found_party:
+                return found_party[0]
+        return {}
+    def get_party_by_id(self, _id):
         """returns dictionary if present and empty dictionary if absent"""
-        return self.parties.get(id, {})
+        return self.get_party(_id)
 
-    def delete_party_by_id(self, id):
+    def get_party_by_name(self, name):
+        """returns office if present and empty if absent"""
+        return self.get_party(name)
+
+    def delete_party_by_id(self, _id):
         """returns True if successful and False if unsuccessful"""
-        try:
-            return bool(self.parties.pop(id) != id)
-        except KeyError:
-            return False
+        if self.get_party_by_id(_id):
+            for party in Parties:
+                if party.get('_id') == _id:
+                    Parties.remove(party)
+                    return True
+        return False
+    def generate_id(self):
+        if not Parties:
+            return 1
+        return Parties[-1].get('_id') + 1
