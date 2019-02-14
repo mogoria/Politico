@@ -63,3 +63,11 @@ def table_queries():
     """
     return [users_table, parties_table, offices_table, candidates_table, votes_table]
 
+def admin_query():
+    password = generate_password_hash('not-sure')
+    query = """
+    INSERT INTO users(firstname, lastname, phoneNumber, email, password, isAdmin)
+        VALUES('John', 'Doe', 0700222333, 'admin@localhost.com', {}, True)
+    """.format(password)
+    return query
+
