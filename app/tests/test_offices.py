@@ -73,16 +73,16 @@ class TestOfficeStatusCodes(BaseOfficeClass, InitOffice):
         self.post(self.office2)
         resp = self.get()
         self.assertEqual(resp.status_code, 200)
-        last_entry = resp.json['data'][-1]
+        last_entry = resp.json['offices'][-1]
         del last_entry['id']
-        self.assertEqual(resp.json['data'][-1], self.office2)
+        self.assertEqual(resp.json['offices'][-1], self.office2)
 
     def test_get_specific_office(self):
         new_office = self.post(self.office2)
-        office_id = new_office.json['data'][0]['id']
+        office_id = new_office.json['office'][0]['id']
         resp = self.get_single(office_id)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json['data'][0], new_office.json['data'][0])
+        self.assertEqual(resp.json['office'][0], new_office.json['office'][0])
 
 class TestValidation(BaseOfficeClass):
     def test_missing_key(self):

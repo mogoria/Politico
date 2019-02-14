@@ -30,36 +30,36 @@ class TestPartiesStatusCodes(BasePartiesTest):
     def test_create_party(self):
         """tests endpoint to create a party"""
         resp = self.post(self.party_data)
-        created_party = resp.json['data'][0]
+        created_party = resp.json['party'][0]
         del created_party['id']
         self.assertEqual(resp.status_code, 201)
-        self.assertEqual(resp.json['data'][0], self.party_data)
+        self.assertEqual(resp.json['party'][0], self.party_data)
 
     def test_get_single_party(self):
         """tests the endpoint to get a specific party"""
         self.post(self.party_data)
-        party = self.post(self.party_data2).json['data'][0]
+        party = self.post(self.party_data2).json['party'][0]
         response = self.get_single(party.get('id'))
         self.assertEqual(response.status_code, 200)
-        found_party = response.json['data'][0]
+        found_party = response.json['party'][0]
         del found_party['id']
         self.assertEqual(found_party, self.party_data2)
 
     def test_delete_party(self):
         """tests endpoint to delete a party"""
         new_party = self.post(self.party_data2)
-        party_id = new_party.json['data'][0]["id"]
+        party_id = new_party.json['party'][0]["id"]
         response = self.delete(party_id)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("deleted successfully", response.json['data'][0]['message'])
+        self.assertIn("deleted successfully", response.json['party'][0]['message'])
 
     def test_edit_party_name(self):
         """tests endpoint to change name of a party"""
         new_party = self.post(self.party_data2)
-        party_id = new_party.json['data'][0]["id"]
+        party_id = new_party.json['party'][0]["id"]
         response = self.patch(party_id, {"name":"new name"})
         self.assertEqual(response.status_code, 200)
-        self.assertIn("new name", response.json["data"][0]['name'])
+        self.assertIn("new name", response.json["party"][0]['name'])
 
 
     def test_get_all_parties(self):
@@ -68,7 +68,7 @@ class TestPartiesStatusCodes(BasePartiesTest):
         self.post(self.party_data2)
         response = self.get()
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json['data'][-1], self.party_data)
+        self.assertTrue(response.json['parties'][-1], self.party_data)
 
 class TestPartyModel(BaseTest):         
     """tests the party model"""
@@ -138,14 +138,14 @@ class TestValidation(BasePartiesTest):
 
     def test_edit_name_with_more_keys(self):
         new_party = self.post(self.party_data2)
-        party_id = new_party.json['data'][0]["id"]
+        party_id = new_party.json['party'][0]["id"]
         response = self.patch(party_id, self.party_data)
         self.assertEqual(response.status_code, 400)
         self.assertIn("incorrect format", response.json['error'])
 
     def test_edit_with_invalid_name(self):
         new_party = self.post(self.party_data2)
-        party_id = new_party.json['data'][0]["id"]
+        party_id = new_party.json['party'][0]["id"]
         response = self.patch(party_id, {"name":200})
         self.assertEqual(response.status_code, 400)
         self.assertIn("enter a valid name", response.json['error'])
