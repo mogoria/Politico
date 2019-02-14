@@ -27,6 +27,7 @@ class Model:
 
     def cursor(self):
         return self.conn.cursor(cursor_factory=RealDictCursor)
+     
 
     def __del__(self):
         self.conn.close()
