@@ -1,4 +1,4 @@
-from . import db_con
+from .init_db import db_con
 from psycopg2.extras import RealDictCursor
 class Model:
     def __init__(self, table_name):
@@ -9,6 +9,18 @@ class Model:
         cursor = self.cursor()
         cursor.execute(query)
         return cursor.fetchall() if mode == 'all' else cursor.fetchone()
+
+    def insert(self, columns, values):
+        if len(columns) != len(values):
+            #input doesnt match
+            self.cursor().execute("INSERT INTO {} ({}) VALUES({})"
+                                  .format(
+                                        self.table_name,
+                                        ",".join(columns),
+                                        ",".join(['{}'.format(value) if isinstance(value, str) else value for value in values])
+                                        )
+                                )
+        self.conn.commit()
 
 
     def select_query(self, columns=None, criteria=None):
