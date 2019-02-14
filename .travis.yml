@@ -9,9 +9,9 @@ services:
   - postgresql
 before_script:
   - psql -c "CREATE DATABASE andela_test;" -U postgres
-  - psql -c "CREATE USER postgres WITH PASSWORD '1A2S3D';" -U postgres
+  - psql -c "CREATE USER tukmogi WITH PASSWORD 'jwt**2';" -U postgres
 env:
-  - DB_URL="postgres://postgres:1A2S3D@localhost:5432/andela_test"
+  - DB_URL="postgres://tukmogi:jwt**2@localhost/andela_test"
 # command to run tests
 script:
   - python -m pytest --cov=app app/tests/
