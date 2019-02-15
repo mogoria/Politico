@@ -11,6 +11,7 @@ def create_app(config_name='development'):
     """Returns flask app based on the configuration"""
     flask_app = Flask(__name__)
     flask_app.config.from_object(app_config[config_name])
+    flask_app.config['JSON_SORT_KEYS'] = False
     flask_app.url_map.strict_slashes = False
     flask_app.register_blueprint(v1_bp)
     flask_app.register_blueprint(party_bp)

@@ -2,7 +2,7 @@
 from app import create_app
 
 
-flask_app = create_app('development')
+flask_app = create_app(config_name='development')
 
 
 if __name__ == '__main__':
