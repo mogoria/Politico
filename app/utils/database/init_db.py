@@ -1,5 +1,6 @@
 from werkzeug.security import generate_password_hash
-import os, psycopg2
+import os
+import psycopg2
 
 
 def db_con(db_url=None):
@@ -11,8 +12,10 @@ def db_con(db_url=None):
     con = psycopg2.connect(db_url)
     return con
 
-def db_refresh():
-    conn = db_con()
+def db_refresh(conn=None):
+    if not conn:
+        #create a connection if it doresn't exist
+        conn = db_con()
     cur = conn.cursor()
     queries = drop_table_queries() + table_queries()
 
@@ -100,8 +103,8 @@ def drop_table_queries():
     """
     return [drop_users, drop_parties, drop_offices, drop_candidates, drop_votes]
 
-
-try:
-    db_refresh()
-except Exception as e:
-    print("An error occured setting up db: {}".format(e)) 
+if __name__ == '__main__':
+    try:
+        db_refresh()
+    except Exception as e:
+        print("An error occured setting up db: {}".format(e))

@@ -1,5 +1,7 @@
-from .init_db import db_con
 from psycopg2.extras import RealDictCursor
+from .init_db import db_con
+
+
 class Model:
     def __init__(self, table_name):
         self.conn = db_con()
@@ -15,10 +17,11 @@ class Model:
             #input doesnt match
             self.cursor().execute("INSERT INTO {} ({}) VALUES({})"
                                   .format(
-                                        self.table_name,
-                                        ",".join(columns),
-                                        ",".join(['{}'.format(value) if isinstance(value, str) else value for value in values])
-                                        )
+                                      self.table_name,
+                                      ",".join(columns),
+                                      #add quotes to string values
+                                      ",".join(['{}'.format(value) if isinstance(value, str) else value for value in values])
+                                    )
                                 )
         self.conn.commit()
 
@@ -39,7 +42,7 @@ class Model:
 
     def cursor(self):
         return self.conn.cursor(cursor_factory=RealDictCursor)
-     
+
 
     def __del__(self):
         self.conn.close()
