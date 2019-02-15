@@ -21,11 +21,20 @@ class PoliticalParty():
         if Parties:
             for party in Parties:
                 if party.get('_id') == _id:
-                    party['_name'] = _name
-                    return {
-                        "id": party.get('_id'),
-                        "name": _name
-                    }
+                    edittable = dict(_id = _id, _name= _name, _hqAddress = _hqAddress, _logoUrl = _logoUrl)
+                    editted_fields = {}
+                    for key, value in edittable.items():
+                        #check if value is not null and doesn't match existing value
+                        if key== '_id' or (value and party[key]!=value):
+                            party[key] = value
+                            editted_fields[key] = value
+
+                    #check if data has been changed
+                    if len(editted_fields.keys()) < 2:
+                        #no change
+                        return {"message": "nothing to change"}
+
+                    return editted_fields
         return {}
 
 

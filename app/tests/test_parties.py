@@ -11,12 +11,12 @@ class BasePartiesTest(BaseTest):
 
     party_data = {
         "name":"new party",
-        "logoUrl":"https://photos/254",
+        "logoUrl":"https://photos.com/254",
         "hqAddress": "Nairobi"
     }
     party_data2 = {
         "name":"new party2",
-        "logoUrl":"https://photos/257",
+        "logoUrl":"https://photos.com/257",
         "hqAddress": "Somewhere"
     }
     def patch(self, party_id, data):
@@ -57,9 +57,10 @@ class TestPartiesStatusCodes(BasePartiesTest):
         """tests endpoint to change name of a party"""
         new_party = self.post(self.party_data2)
         party_id = new_party.json['party'][0]["id"]
-        response = self.patch(party_id, {"name":"new name"})
+        #response = self.patch(party_id, {"name":"new name"})
+        response = self.patch(party_id, self.party_data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("new name", response.json["party"][0]['name'])
+        self.assertIn(self.party_data.get('name'), response.json["party"][0]['name'])
 
 
     def test_get_all_parties(self):
@@ -139,7 +140,9 @@ class TestValidation(BasePartiesTest):
     def test_edit_name_with_more_keys(self):
         new_party = self.post(self.party_data2)
         party_id = new_party.json['party'][0]["id"]
-        response = self.patch(party_id, self.party_data)
+        edit_data = self.party_data
+        edit_data['extra_key'] = "value"
+        response = self.patch(party_id, edit_data)
         self.assertEqual(response.status_code, 400)
         self.assertIn("incorrect format", response.json['error'])
 
@@ -148,7 +151,7 @@ class TestValidation(BasePartiesTest):
         party_id = new_party.json['party'][0]["id"]
         response = self.patch(party_id, {"name":200})
         self.assertEqual(response.status_code, 400)
-        self.assertIn("enter a valid name", response.json['error'])
+        self.assertIn("incorrect format", response.json['error'])
 
     def test_create_invalid_party(self):
         invalid_party = {

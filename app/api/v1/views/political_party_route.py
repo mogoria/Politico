@@ -10,6 +10,8 @@ PARTY = PoliticalParty()
 @v1_bp.route('/parties', methods=['POST'])
 def post_political_party():
     """route to create a political party"""
+    if not request.get_json():
+        return utils.util_response(400, "Invalid request.", "data")
     role = "party"
     new_political_party = dict()
     data = request.get_json(force=True)
@@ -67,25 +69,29 @@ def get_specific_political_party(party_id):
 @v1_bp.route("/parties/<int:party_id>/name", methods=["PATCH"])
 def edit_specific_political_party(party_id):
     """endpoint to edit specific political party"""
+    if not request.get_json():
+        return utils.util_response(400, "Invalid request.", "data")
     role = "party"
-    valid_fields = ['name']
+    valid_fields = ['name', 'hqAddress', 'logoUrl']
     data = request.get_json(force=True)
 
-    if valid_fields == list(data.keys()):
-        updated_name = data['name']
+    if sorted(valid_fields) == sorted(list(data.keys())):
+        new_data = dict(name=data['name'], hqAddress=data['hqAddress'], logoUrl=data['logoUrl'])
+        validator = utils.PartyValidator(**new_data)
         #check if name is a string
-        validator = utils.Validator()
-        if not validator.is_str(updated_name):
-            return utils.util_response(400, "Please enter a valid name", role)
+        
+        if validator.validate():
+            return utils.util_response(400, validator.validate(), role)
 
         party = utils.desanitise(PARTY.get_party_by_id(party_id))
         if party:
-            party['name'] = updated_name
-            response = PARTY.update_party(**utils.sanitise(party))
-            if response:
-                return utils.util_response(200, response, role)
+            new_data['id'] = party['id']
+            response = PARTY.update_party(**utils.sanitise(new_data))
+            if response.get('message'):
+                return utils.util_response(400, response, role)
+            return utils.util_response(200, utils.desanitise(response), role)
         return utils.util_response(404, "party not found", role)
-    
+
     return utils.util_response(400, "incorrect format. " +
                                        "Fields include name", role)
 
