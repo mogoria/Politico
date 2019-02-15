@@ -5,6 +5,7 @@ from instance.config import app_config
 from app.api.v1.views import v1_bp
 from app.api.v1.views.political_party_route import v1_bp as party_bp
 from app.api.v1.views.political_office_route import v1_bp as office_bp
+from app.utils.helper import handle_bad_request
 
 
 def create_app(config_name='development'):
@@ -13,6 +14,7 @@ def create_app(config_name='development'):
     flask_app.config.from_object(app_config[config_name])
     flask_app.config['JSON_SORT_KEYS'] = False
     flask_app.url_map.strict_slashes = False
+    flask_app.register_error_handler(400, handle_bad_request)
     flask_app.register_blueprint(v1_bp)
     flask_app.register_blueprint(party_bp)
     flask_app.register_blueprint(office_bp)
