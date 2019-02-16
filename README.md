@@ -2,6 +2,7 @@
 
 Politico is a web application to handle elections. Politico enables a wide range of users including administrators and normal users(voters and politicians). Users can either register or login. A voter can vote and view the politicians they have voted for. A voter can become a politician by expressing interest in a political office. The admin adds political offices, political parties and admin users. 
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3d7b05710b214927a1627b6c5be1b3c0)](https://app.codacy.com/app/mogoria/Politico?utm_source=github.com&utm_medium=referral&utm_content=mogoria/Politico&utm_campaign=Badge_Grade_Dashboard)
 [![Coverage Status](https://coveralls.io/repos/github/mogoria/Politico/badge.svg?branch=develop)](https://coveralls.io/github/mogoria/Politico?branch=develop)
 [![Build Status](https://travis-ci.org/mogoria/Politico.svg?branch=develop)](https://travis-ci.org/mogoria/Politico)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1341fcb8087f9f135ab7/maintainability)](https://codeclimate.com/github/mogoria/Politico/maintainability)
