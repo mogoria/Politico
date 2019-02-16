@@ -71,16 +71,16 @@ pytest --cov=app app/tests
 ```
 
 ## Endpoints
-|   METHOD         |    URL                             |   FUNCTION
-|  --------------  | --------------                     |  --------------  
-|   `POST`         |  `/api/v1/offices`                 |  create an office 
-|   `POST`         |  `/api/v1/parties`                 |  create a party
-|   `GET`          |  `/api/v1/offices`                 |  find all offices
-|   `GET`          |  `/api/v1/parties`                 |  find all parties
-|   `GET`          |  `/api/v1/offices/<int:office_id>` |  find a specific office with the office_id
-|   `GET`          |  `/api/v1/parties/<int:party_id>`  |  find a specific party with the party_id
-|   `DELETE`       |  `/api/v1/offices/<int:office_id>` |  delete a specific office with the office_id
-|   `DELETE`       |  `/api/v1/parties/<int:party_id>`  |  delete a specific party with  the party_id
+|   METHOD         |    URL                                 |   FUNCTION                                    |
+|  --------------  |  ------------------------------------  |  -------------------------------------------  |
+|   `POST`         |  `/api/v1/offices`                     |  create an office                             |
+|   `POST`         |  `/api/v1/parties`                     |  create a party                               |
+|   `GET`          |  `/api/v1/offices`                     |  find all offices                             |
+|   `GET`          |  `/api/v1/parties`                     |  find all parties                             |
+|   `GET`          |  `/api/v1/offices/<int:office_id>`     |  find a specific office with the office_id    |
+|   `GET`          |  `/api/v1/parties/<int:party_id>`      |  find a specific party with the party_id      |
+|   `DELETE`       |  `/api/v1/offices/<int:office_id>`     |  delete a specific office with the office_id  |
+|   `PATCH`        |  `/api/v1/parties/<int:party_id>/name` |  edit a specific party with  the party_id     |
 
 ## Authors
 

@@ -45,4 +45,3 @@ class TestOfficeValidator(TestValidator):
         office['type'] = 'weird type'
         validator = OfficeValidator(**office)
         self.assertIn('enter a valid type', validator.validate())
-        
