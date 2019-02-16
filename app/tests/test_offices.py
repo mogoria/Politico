@@ -1,7 +1,7 @@
-import unittest
 from app.api.v1.models.political_office_model import PoliticalOffice
-from . import BaseTest
 from app.api.v1.views.utils import sanitise, desanitise
+from . import BaseTest
+
 
 class InitOffice:
     """sets mock data to be used for testing"""
@@ -23,7 +23,7 @@ class BaseOfficeClass(InitOffice, BaseTest):
     """sets the url path for office endpoints"""
     path = "/api/v1/offices"
 
-class TestOfficeModel(BaseOfficeClass):         
+class TestOfficeModel(BaseOfficeClass):
     """tests the office model"""
     def test_create_office(self):
         """tests whether office model can create office"""
