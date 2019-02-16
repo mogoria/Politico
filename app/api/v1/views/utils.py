@@ -6,8 +6,8 @@ def wrap_response(status_code, data, role):
     if 200 <= status_code < 300:
         return {
             "status":status_code,
-            role:data if isinstance(data, list) else [data]            
-        }
+            role:data if isinstance(data, list) else [data]
+            }
     return {
         "status":status_code,
         "error":data
@@ -19,13 +19,50 @@ def util_response(status_code, data, role):
         jsonify(wrap_response(status_code, data, role)), status_code
     )
 
-def check_null(data):
-    """given a dictionary, returns a list of null fields"""
-    null_fields = []
-    for field, value in data.items():
-        if not value:
-            null_fields.append(field)
-    return null_fields
+def check_fields(request, required_fields):
+    """decorator to validate required fields"""
+    def wrap(func):
+        def wrapped_f(*args, **kwargs):
+            data = request.get_json()
+            message = ""
+            if data:
+                #get the fields provided int the request
+                provided_fields = list(data.keys())
+                #check if provided fields match required fields
+                if sorted(provided_fields) == sorted(required_fields):
+                    return func(*args, **kwargs)
+
+                missing_fields = []
+                #get missing required fields
+                for field in required_fields:
+                    if field not in provided_fields:
+                        missing_fields.append(field)
+
+                if missing_fields:
+                    message = "Please provide valid fields for: {}"\
+                            .format(display_error_fields(missing_fields))
+                #the request contains extra fields
+                else:
+                    message = "Only the following fields are required: {}"\
+                            .format(display_error_fields(required_fields))
+            else:
+                message = "Please enter a valid json request"
+
+            return util_response(400, message, "error")
+        # Renaming the function name:
+        wrapped_f.__name__ = func.__name__
+        return wrapped_f
+    return wrap
+
+def display_error_fields(fields):
+    """format the display of missing fields"""
+    num_fields = len(fields)
+    if num_fields == 1:
+        return fields[0]
+    if num_fields == 2:
+        return "{} and {}".format(fields[-2], fields[-1])
+    #field length greater than 2
+    return "{} and {}".format(",".join(fields[:-1]), fields[-1])
 
 def sanitise(dic):
     """Adds underscores to keys in dictionary"""
@@ -53,8 +90,8 @@ class Validator:
         if office in self.office_types:
             return True
         return False
-
-    def is_null(self, value):
+    @classmethod
+    def is_null(cls, value):
         """checks if a value is null"""
         if isinstance(value, str):
             value = value.strip()
@@ -67,9 +104,11 @@ class Validator:
 
     def is_str(self, value):
         """Returns True if value isn't a number and contains letters and spaces but not null"""
+        #confirm that value is not null and not an integer
         if self.is_int(value) or self.is_null(value):
             return False
         for char in value:
+            #only accept spaces and alphabets
             if not (char.isalpha() or char == " "):
                 return False
         return True
@@ -115,9 +154,9 @@ class OfficeValidator(Validator):
         }
         if self.mass_non_null(values):
             return self.errors
-        elif self.mass_check_type(type_list, values):
+        if self.mass_check_type(type_list, values):
             return self.errors
-        elif not self.check_office_type(self.type):
+        if not self.check_office_type(self.type):
             return "Please enter a valid type either: {}".format(", ".join(self.office_types))
         return []
 
