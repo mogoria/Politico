@@ -1,6 +1,11 @@
+from . import Base
+
+
 Parties = []
-class PoliticalParty():
+class PoliticalParty(Base):
     """A class used to store and retrieve political parties"""
+    def __init__(self):
+        super().__init__(Parties)
 
     def create_party(self, _name, _hqAddress, _logoUrl):
         """Save new party to parties dictionary"""
@@ -15,52 +20,47 @@ class PoliticalParty():
             }
             Parties.append(new_party)
         return new_party
-
-    def update_party(self, _id, _name, _hqAddress=None, _logoUrl=None):
+    @classmethod
+    def update_party(cls, _id, _name, _hqAddress=None, _logoUrl=None):
         """Updates a party by searching the id provided"""
-        if Parties:
-            for party in Parties:
-                if party.get('_id') == _id:
-                    party['_name'] = _name
-                    return {
-                        "id": party.get('_id'),
-                        "name": _name
-                    }
-        return {}
 
+        edittable = dict(_id=_id, _name=_name, _hqAddress=_hqAddress, _logoUrl=_logoUrl)
+        editted_fields = {}
 
-    def get_all_parties(self):
+        for party in Parties:
+            if party.get('_id') == _id:
+                for key, value in edittable.items():
+                    #check if value is not null and doesn't match existing value
+                    if key == '_id' or (value and party[key] != value):
+                        party[key] = value
+                        editted_fields[key] = value
+
+        #check if data has been changed
+        if len(editted_fields.keys()) < 2:
+            #no change
+            return {"message": "nothing to change"}
+
+        return editted_fields
+
+    @classmethod
+    def get_all_parties(cls):
         """returns a list of party objects"""
         return Parties
 
-    def get_party(self, search_term):
-        """finds a party based on the term given"""
-        if Parties:
-            if isinstance(search_term, int):
-                field = '_id'
-            else:
-                field = '_name'
-            found_party = [party for party in Parties if party.get(field) == search_term]
-            if found_party:
-                return found_party[0]
-        return {}
     def get_party_by_id(self, _id):
         """returns dictionary if present and empty dictionary if absent"""
-        return self.get_party(_id)
+        return self.get({"_id":_id})
 
     def get_party_by_name(self, name):
         """returns office if present and empty if absent"""
-        return self.get_party(name)
+        return self.get({"_name":name})
 
-    def delete_party_by_id(self, _id):
+    @classmethod
+    def delete_party_by_id(cls, _id):
         """returns True if successful and False if unsuccessful"""
-        if self.get_party_by_id(_id):
-            for party in Parties:
-                if party.get('_id') == _id:
-                    Parties.remove(party)
-                    return True
+        for party in Parties:
+            #remove party if it exists in the party list
+            if party.get('_id') == _id:
+                Parties.remove(party)
+                return True
         return False
-    def generate_id(self):
-        if not Parties:
-            return 1
-        return Parties[-1].get('_id') + 1

@@ -1,5 +1,6 @@
-from . import unittest
 from app.api.v1.views.utils import Validator, PartyValidator, OfficeValidator
+from . import unittest
+
 
 class TestValidator(unittest.TestCase):
     def setUp(self):
@@ -13,7 +14,7 @@ class TestValidator(unittest.TestCase):
             "type": "legislative",
             "name": "office"
         }
-        
+
 
 class TestPartyValidator(TestValidator):
     def test_valid_party(self):
