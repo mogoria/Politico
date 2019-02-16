@@ -2,7 +2,6 @@ import json
 from app.api.v1.models.political_party_model import PoliticalParty
 from app.api.v1.views.utils import desanitise, sanitise
 from . import BaseTest
-from . import unittest
 
 
 class BasePartiesTest(BaseTest):
@@ -10,13 +9,13 @@ class BasePartiesTest(BaseTest):
     path = "/api/v1/parties"
 
     party_data = {
-        "name":"new party",
-        "logoUrl":"https://photos/254",
+        "name":"Peoples Party",
+        "logoUrl":"https://photos.com/254",
         "hqAddress": "Nairobi"
     }
     party_data2 = {
-        "name":"new party2",
-        "logoUrl":"https://photos/257",
+        "name":"Independent",
+        "logoUrl":"https://photos.com/257",
         "hqAddress": "Somewhere"
     }
     def patch(self, party_id, data):
@@ -26,7 +25,7 @@ class BasePartiesTest(BaseTest):
         return self.client.patch(path, data=json.dumps(data), content_type="application/json")
 
 class TestPartiesStatusCodes(BasePartiesTest):
-
+    """tests endpoints in case of success"""
     def test_create_party(self):
         """tests endpoint to create a party"""
         resp = self.post(self.party_data)
@@ -57,9 +56,10 @@ class TestPartiesStatusCodes(BasePartiesTest):
         """tests endpoint to change name of a party"""
         new_party = self.post(self.party_data2)
         party_id = new_party.json['party'][0]["id"]
-        response = self.patch(party_id, {"name":"new name"})
+        #response = self.patch(party_id, {"name":"new name"})
+        response = self.patch(party_id, self.party_data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("new name", response.json["party"][0]['name'])
+        self.assertIn(self.party_data.get('name'), response.json["party"][0]['name'])
 
 
     def test_get_all_parties(self):
@@ -70,7 +70,7 @@ class TestPartiesStatusCodes(BasePartiesTest):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json['parties'][-1], self.party_data)
 
-class TestPartyModel(BaseTest):         
+class TestPartyModel(BaseTest):
     """tests the party model"""
     Party = PoliticalParty()
     def test_create_office(self):
@@ -104,6 +104,7 @@ class TestPartyModel(BaseTest):
         self.assertEqual(res, new_party)
 
     def test_null_if_no_party(self):
+        """tests whether get party returns null if party list is empty"""
         res = self.Party.get_party_by_name("random name")
         self.assertEqual(res, {})
 
@@ -118,7 +119,7 @@ class TestValidation(BasePartiesTest):
         self.assertTrue(response.status_code, 404)
         self.assertIn("not found", response.json['error'])
 
-    
+
     def test_create_existing_party_name(self):
         self.post(self.party_data)
         #repeat request
@@ -128,27 +129,33 @@ class TestValidation(BasePartiesTest):
 
     def test_edit_non_existent_party(self):
         self.post(self.party_data)
-        response = self.patch(self.party_data2.get("id"), {"name":"new name"})
+        response = self.patch(23423, self.party_data2)
         self.assertTrue(response.status_code, 404)
+        self.assertEqual("party not found", response.json['error'])
 
-    def test_edit_invalid_key(self):
-        self.post(self.party_data)
-        response = self.patch(self.party_data.get('id'), {"extra_field":"value"})
-        self.assertTrue(400, response.status_code)
+    def test_edit_without_changing(self):
+        new_party = self.post(self.party_data2)
+        party_id = new_party.json['party'][0]["id"]
+        response = self.patch(party_id, self.party_data2)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual("nothing to change", response.json["error"])
 
     def test_edit_name_with_more_keys(self):
         new_party = self.post(self.party_data2)
         party_id = new_party.json['party'][0]["id"]
-        response = self.patch(party_id, self.party_data)
+        edit_data = self.party_data
+        edit_data['extra_key'] = "value"
+        response = self.patch(party_id, edit_data)
         self.assertEqual(response.status_code, 400)
-        self.assertIn("incorrect format", response.json['error'])
+        self.assertIn("Only the following fields are required:", response.json['error'])
 
     def test_edit_with_invalid_name(self):
         new_party = self.post(self.party_data2)
         party_id = new_party.json['party'][0]["id"]
-        response = self.patch(party_id, {"name":200})
+        invalid_party = {"name":200, "hqAddress":"Mombasa", "logoUrl": "photo.com"}
+        response = self.patch(party_id, invalid_party)
         self.assertEqual(response.status_code, 400)
-        self.assertIn("enter a valid name", response.json['error'])
+        self.assertEqual("Please enter a valid name", response.json['error'])
 
     def test_create_invalid_party(self):
         invalid_party = {
@@ -158,15 +165,29 @@ class TestValidation(BasePartiesTest):
         }
         response = self.post(invalid_party)
         self.assertTrue(response.status_code, 400)
-        self.assertIn("incorrect format", response.json['error'])
+        print(response.json.keys())
+        self.assertEqual("Please enter a value for name", response.json['error'])
 
     def test_create_with_few_fields(self):
         response = self.post({"name":"anonymous"})
         self.assertTrue(response.status_code, 400)
-        self.assertIn("incorrect format", response.json['error'])
+        self.assertIn("hqAddress and logoUrl", response.json['error'])
 
     def test_delete_non_existent_party(self):
         random_partyid = 24983
         response = self.delete(random_partyid)
         self.assertTrue(response.status_code, 404)
         self.assertIn("not found", response.json['error'])
+
+    def test_invalid_request(self):
+        resp = self.client.post(self.path, data=json.dumps(self.party_data))
+        self.assertTrue(resp.status_code, 400)
+        self.assertEqual("Please enter a valid json request", resp.json['error'])
+
+    def test_edit_name_with_invalid_name_v2(self):
+        new_party = self.post(self.party_data2)
+        party_id = new_party.json['party'][0]["id"]
+        invalid_party = {"name":"200", "hqAddress":"Mombasa", "logoUrl": "photo.com"}
+        response = self.patch(party_id, invalid_party)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual("Please enter a valid name", response.json['error'])

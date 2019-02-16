@@ -7,7 +7,7 @@ def wrap_response(status_code, data, role):
         return {
             "status":status_code,
             role:data if isinstance(data, list) else [data]
-            }
+        }
     return {
         "status":status_code,
         "error":data
