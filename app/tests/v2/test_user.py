@@ -1,35 +1,12 @@
 #postgres://postgres:1A2S3D@localhost:5432/andela_test
-from unittest import TestCase
-from werkzeug.security import generate_password_hash
+from . import BaseTestModel
 from app.api.v2.models.user_model import User
 from app.utils.database import init_db
 
 
-class TestUserModel(TestCase):
+class TestUserModel(BaseTestModel):
     def setUp(self):
-        password = generate_password_hash('pass123')
-        self.dummy_data = dict(firstname='Tukmen', lastname='Mogoria',
-                               othername='Asianut', email='tukmogi@gmail.com',
-                               phonenumber='0727296203', passporturi='avatar.com/234',
-                               password=password, isadmin='True')
-
-        self.dummy_data2 = dict(firstname='Mary', lastname='Jane',
-                                othername='Pink', email='jane@gmail.com',
-                                phonenumber='072234366', passporturi='avatar.com/236',
-                                password=password, isadmin='False')
-
-    def sort_dic(self, dic):
-        return {key:dic.get(key) for key in sorted(dic.keys())}
-
-    def sortnstrip(self, dic):
-        sorted_dic = self.sort_dic(dic)
-        #delete the key id if it exists
-        if sorted_dic.get('id'):
-            del sorted_dic['id']
-        #delete the key isadmin if it exists
-        if sorted_dic.get('isadmin'):
-            del sorted_dic['isadmin']
-        return sorted_dic
+        super().setUp()
 
     def test_insert_to_db(self):
         user = User(** self.dummy_data)
