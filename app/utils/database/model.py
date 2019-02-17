@@ -1,48 +1,60 @@
 from psycopg2.extras import RealDictCursor
-from .init_db import db_con
-
+from . import init_db
 
 class Model:
-    def __init__(self, table_name):
-        self.conn = db_con()
-        self.table_name = table_name
+    conn=init_db.db_con()
 
-    def fetch(self, query, mode='all'):
-        cursor = self.cursor()
+    def __init__(self):
+        if self.conn_closed():
+            Model.conn = init_db.db_con()
+
+    @classmethod
+    def fetch(cls, query, mode='all'):
+        cursor = cls.cursor()
         cursor.execute(query)
         return cursor.fetchall() if mode == 'all' else cursor.fetchone()
 
-    def insert(self, columns, values):
+    @classmethod
+    def insert(cls, table_name, columns, values):
         if len(columns) != len(values):
             #input doesnt match
-            self.cursor().execute("INSERT INTO {} ({}) VALUES({})"
-                                  .format(
-                                      self.table_name,
-                                      ",".join(columns),
-                                      #add quotes to string values
-                                      ",".join(['{}'.format(value) if isinstance(value, str) else value for value in values])
-                                    )
+            raise Exception("Columns and Values don't match")
+
+        cur = cls.conn.cursor()
+        cur.execute("INSERT INTO {} ({}) VALUES({})"
+                                .format(
+                                    table_name,
+                                    ",".join(columns),
+                                    #add quotes to string values
+                                    ",".join(["'{}'".format(value) if isinstance(value, str) else value for value in values])
                                 )
-        self.conn.commit()
+                            )
+        cls.conn.commit()
 
-
-    def select_query(self, columns=None, criteria=None):
+    @classmethod
+    def select_query(cls, table_name, columns=None, criteria=None):
         join_type = ", ".join(columns) if columns else '*'
-        query = 'SELECT {} FROM {}'.format(join_type, self.table_name)
+        query = 'SELECT {} FROM {}'.format(join_type, table_name)
         if criteria:
             query = "{} WHERE {}".format(query, criteria)
 
         return query
 
-    def select_all(self, columns=None, criteria=None):
-        return self.fetch(self.select_query(columns, criteria))
+    @classmethod
+    def select_all(cls, table_name, columns=None, criteria=None):
+        return cls.fetch(cls.select_query(table_name, columns, criteria))
 
-    def select_one(self, columns=None, criteria=None):
-        return self.fetch(self.select_query(columns, criteria), mode='one')
+    @classmethod
+    def select_one(cls, table_name, columns=None, criteria=None):
+        return cls.fetch(cls.select_query(table_name, columns, criteria), mode='one')
 
-    def cursor(self):
-        return self.conn.cursor(cursor_factory=RealDictCursor)
+    @classmethod
+    def cursor(cls):
+        return cls.conn.cursor(cursor_factory=RealDictCursor)
+    @classmethod
+    def close(cls):
+        cls.conn.close()
 
-
-    def __del__(self):
-        self.conn.close()
+    @classmethod
+    def conn_closed(cls):
+        return bool(cls.conn)
