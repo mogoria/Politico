@@ -3,7 +3,7 @@ from app.utils.database import init_db
 from . import BaseTestModel
 
 
-class TestOfficeModel(BaseTestModel):
+class TestPartyModel(BaseTestModel):
     def setUp(self):
         super().setUp()
         self.data1 = dict(name="President", logourl="logo.com/23", hqaddress="Nairobi")
