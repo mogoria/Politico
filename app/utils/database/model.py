@@ -26,7 +26,7 @@ class Model:
                                     table_name,
                                     ",".join(columns),
                                     #add quotes to string values
-                                    ",".join(["'{}'".format(value) if isinstance(value, str) else value for value in values])
+                                    ",".join(["'{}'".format(value) if isinstance(value, str) else str(value) for value in values])
                                 )
                             )
         cls.conn.commit()

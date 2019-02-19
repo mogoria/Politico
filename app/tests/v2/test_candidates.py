@@ -6,7 +6,8 @@ from . import BaseTestModel
 
 
 class TestCandidateModel(BaseTestModel):
-    candidate_data = dict(email='tukmogi@gmail.com', party_name='independent', office_name='president')
+    candidate_data = dict(email='tukmogi@gmail.com', party_name='independent',
+                          office_name='president')
 
     @staticmethod
     def decode_candidate_data(candidate_data):
@@ -18,7 +19,7 @@ class TestCandidateModel(BaseTestModel):
         party_id = Party.get_party_id_from_name(party_name)
         office_id = Office.get_office_id_from_name(office_name)
 
-        return dict(user=user_id, party=party_id, office=office_id)
+        return dict(candidate=user_id, party=party_id, office=office_id)
 
     def create_candidate(self, user_data, party_data, office_data):
         #create a user
@@ -43,7 +44,7 @@ class TestCandidateModel(BaseTestModel):
         user_id = User.get_user_id_from_email(self.user_data.get('email'))
         party_id = Party.get_party_id_from_name(self.party_data.get('name'))
         office_id = Office.get_office_id_from_name(self.office_data.get('name'))
-        cand = dict(user=user_id, party=party_id, office=office_id)
+        cand = dict(candidate=user_id, party=party_id, office=office_id)
         
         self.assertEqual(new_candidate, cand)
 
@@ -53,7 +54,7 @@ class TestCandidateModel(BaseTestModel):
         self.create_candidate(self.user_data2, self.party_data2, self.office_data2)
 
         candidates = Candidate.get_all_candidates()
-        self.assertEqual(candidates, 2)
+        self.assertEqual(len(candidates), 2)
 
     def test_get_candidate_by_email(self):
         new_cand = self.create_candidate(self.user_data, self.party_data, self.office_data)
