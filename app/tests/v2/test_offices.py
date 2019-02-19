@@ -1,5 +1,4 @@
 from app.api.v2.models.office_model import Office
-from app.utils.database import init_db
 from . import BaseTestModel
 
 
@@ -22,7 +21,7 @@ class TestOfficeModel(BaseTestModel):
 
         new_office = self.sortnstrip(new_office)
         office_details = self.sortnstrip(self.office_data)
-    
+
         self.assertEqual(office_details, new_office)
 
     def test_get_all_offices(self):

@@ -18,7 +18,7 @@ class TestDB(BaseTest):
         """.format(email, password)
         self.cur.execute(insert_query)
         self.db_con.commit()
-        
+
         select_query = """
         SELECT email FROM USERS WHERE email = '{}'
         """.format(email)

@@ -23,14 +23,14 @@ class BaseTestModel(unittest.TestCase):
         init_db.db_refresh()
         self.password = generate_password_hash("pass123")
         self.user_data = dict(firstname='Tukmen', lastname='Mogoria',
-                               othername='Asianut', email='tukmogi@gmail.com',
-                               phonenumber='0727296203', passporturi='avatar.com/234',
-                               password=self.password, isadmin='True')
+                              othername='Asianut', email='tukmogi@gmail.com',
+                              phonenumber='0727296203', passporturi='avatar.com/234',
+                              password=self.password, isadmin='True')
 
         self.user_data2 = dict(firstname='Mary', lastname='Jane',
-                                othername='Pink', email='jane@gmail.com',
-                                phonenumber='072234366', passporturi='avatar.com/236',
-                                password=self.password, isadmin='False')
+                               othername='Pink', email='jane@gmail.com',
+                               phonenumber='072234366', passporturi='avatar.com/236',
+                               password=self.password, isadmin='False')
 
         self.office_data = dict(name="President", type="state")
         self.office_data2 = dict(name="Governor", type="federal")

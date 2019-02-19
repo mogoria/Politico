@@ -35,17 +35,17 @@ class TestCandidateModel(BaseTestModel):
         candidate_data = self.decode_candidate_data(candidate_data)
         candidate = Candidate(** candidate_data)
         return candidate.add_candidate()
-    
+
     def test_add_candidate(self):
-        
+
         new_candidate = self.create_candidate(self.user_data, self.party_data, self.office_data)
-        
+
 
         user_id = User.get_user_id_from_email(self.user_data.get('email'))
         party_id = Party.get_party_id_from_name(self.party_data.get('name'))
         office_id = Office.get_office_id_from_name(self.office_data.get('name'))
         cand = dict(candidate=user_id, party=party_id, office=office_id)
-        
+
         self.assertEqual(new_candidate, cand)
 
     def test_get_all_candidates(self):

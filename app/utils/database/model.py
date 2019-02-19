@@ -22,13 +22,13 @@ class Model:
 
         cur = cls.conn.cursor()
         cur.execute("INSERT INTO {} ({}) VALUES({})"
-                                .format(
-                                    table_name,
-                                    ",".join(columns),
-                                    #add quotes to string values
-                                    ",".join(["'{}'".format(value) if isinstance(value, str) else str(value) for value in values])
-                                )
-                            )
+                    .format(
+                        table_name,
+                        ",".join(columns),
+                        #add quotes to string values
+                        ",".join(["'{}'".format(value) if isinstance(value, str) else str(value) for value in values])
+                    )
+                )
         cls.conn.commit()
 
     @classmethod

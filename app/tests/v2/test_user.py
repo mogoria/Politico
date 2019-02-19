@@ -1,7 +1,6 @@
 #postgres://postgres:1A2S3D@localhost:5432/andela_test
 from . import BaseTestModel
 from app.api.v2.models.user_model import User
-from app.utils.database import init_db
 
 
 class TestUserModel(BaseTestModel):
