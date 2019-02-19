@@ -7,7 +7,6 @@ class TestDB(BaseTest):
         cur = self.db_con.cursor()
         cur.execute("SELECT VERSION()")
         res = cur.fetchone()
-        print(res)
         self.assertIn("PostgreSQL", res[0])
 
     def test_create_user(self):

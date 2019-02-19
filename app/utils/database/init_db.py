@@ -62,6 +62,7 @@ def table_queries():
     CREATE TABLE candidates(
         office INT REFERENCES offices(id),
         candidate INT REFERENCES users(id) UNIQUE,
+        party INT REFERENCES parties(id),
         PRIMARY KEY( office, candidate)
     )
     """

@@ -118,15 +118,14 @@ class TestValidation(BaseOfficeClass):
         """tests a get request for a non existing id"""
         self.post(self.office1)
         resp = self.get_single(9872938754)
-        self.assertTrue(resp.status_code, 404)
+        self.assertEqual(resp.status_code, 404)
         self.assertIn("office not found", resp.json['error'])
 
     def test_create_existing_office(self):
         """tests creating an existing office"""
         self.post(self.office1)
         resp = self.post(self.office1)
-        self.assertTrue(resp.status_code, 409)
-        print(resp.json)
+        self.assertEqual(resp.status_code, 409)
         self.assertIn('already exists', resp.json['error'])
 
     def test_invalid_type(self):
