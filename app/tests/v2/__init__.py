@@ -20,6 +20,7 @@ class BaseTest(unittest.TestCase):
 
 class BaseTestModel(unittest.TestCase):
     def setUp(self):
+        init_db.db_refresh()
         self.password = generate_password_hash("pass123")
         self.user_data = dict(firstname='Tukmen', lastname='Mogoria',
                                othername='Asianut', email='tukmogi@gmail.com',
@@ -68,4 +69,3 @@ class BaseTestModel(unittest.TestCase):
 
     def tearDown(self):
         Model.close()
-        init_db.db_refresh()

@@ -5,13 +5,20 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install coveralls
-services:
-  - postgresql
-before_script:
-  - psql -c "CREATE DATABASE andela_test;" -U postgres
-  - psql -c "CREATE USER tukmogi WITH PASSWORD 'jwt**2';" -U postgres
+
+addons:
+  postgresql: "10"
+    apt:
+    packages:
+    - postgresql-10
+    - postgresql-client-10
+
 env:
-  - DB_URL="postgres://tukmogi:jwt**2@localhost/andela_test"
+    global:
+    - PGPORT=5432
+    - SECRET_KEY="ABIGSECRET"
+before_script:
+  - psql -c 'CREATE DATABASE andela_test;' -U postgres
 # command to run tests
 script:
   - python -m pytest --cov=app app/tests/
