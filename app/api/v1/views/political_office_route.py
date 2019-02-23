@@ -57,4 +57,4 @@ def get_single_office(office_id):
     found_office = utils.desanitise(found_office)
     if found_office:
         return utils.util_response(200, found_office, role)
-    return utils.util_response(400, "office not found", role)
+    return utils.util_response(404, "office not found", role)

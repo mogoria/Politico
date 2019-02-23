@@ -67,8 +67,10 @@ class TestPartiesStatusCodes(BasePartiesTest):
         self.post(self.party_data)
         self.post(self.party_data2)
         response = self.get()
+        recent_party = response.json['parties'][0]
+        del recent_party['id']
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json['parties'][-1], self.party_data)
+        self.assertEqual(recent_party, self.party_data)
 
 class TestPartyModel(BaseTest):
     """tests the party model"""
@@ -111,12 +113,12 @@ class TestPartyModel(BaseTest):
 class TestValidation(BasePartiesTest):
     def test_get_empty_db(self):
         response = self.get()
-        self.assertTrue(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
         self.assertIn("not found", response.json['error'])
 
     def test_get_non_existent_party(self):
         response = self.get_single(987439)
-        self.assertTrue(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
         self.assertIn("not found", response.json['error'])
 
 
@@ -124,13 +126,13 @@ class TestValidation(BasePartiesTest):
         self.post(self.party_data)
         #repeat request
         response = self.post(self.party_data)
-        self.assertTrue(response.status_code, 409)
+        self.assertEqual(response.status_code, 409)
         self.assertIn("already exists", response.json['error'])
 
     def test_edit_non_existent_party(self):
         self.post(self.party_data)
         response = self.patch(23423, self.party_data2)
-        self.assertTrue(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
         self.assertEqual("party not found", response.json['error'])
 
     def test_edit_without_changing(self):
@@ -164,24 +166,23 @@ class TestValidation(BasePartiesTest):
             "hqAddress": "Somewhere"
         }
         response = self.post(invalid_party)
-        self.assertTrue(response.status_code, 400)
-        print(response.json.keys())
+        self.assertEqual(response.status_code, 400)
         self.assertEqual("Please enter a value for name", response.json['error'])
 
     def test_create_with_few_fields(self):
         response = self.post({"name":"anonymous"})
-        self.assertTrue(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
         self.assertIn("hqAddress and logoUrl", response.json['error'])
 
     def test_delete_non_existent_party(self):
         random_partyid = 24983
         response = self.delete(random_partyid)
-        self.assertTrue(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
         self.assertIn("not found", response.json['error'])
 
     def test_invalid_request(self):
         resp = self.client.post(self.path, data=json.dumps(self.party_data))
-        self.assertTrue(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 400)
         self.assertEqual("Please enter a valid json request", resp.json['error'])
 
     def test_edit_name_with_invalid_name_v2(self):

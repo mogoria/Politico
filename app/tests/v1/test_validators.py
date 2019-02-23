@@ -1,4 +1,4 @@
-from app.api.v1.views.utils import Validator, PartyValidator, OfficeValidator
+from app.api.v1.views.utils import PartyValidator, OfficeValidator
 from . import unittest
 
 
@@ -24,16 +24,15 @@ class TestPartyValidator(TestValidator):
     def test_blank_name(self):
         values = self.valid_party
         values['name'] = ''
-        print(values)
         validator = PartyValidator(** values)
         self.assertIn("Please enter a value for name", validator.validate())
 
     def test_invalid_name(self):
         values = self.valid_party
         values['name'] = 12
-        print(values)
         validator = PartyValidator(** values)
         self.assertIn("Please enter a valid name", validator.validate())
+
 
 class TestOfficeValidator(TestValidator):
     def test_valid_party(self):
