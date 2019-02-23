@@ -11,9 +11,10 @@ def db_con(db_url=None):
     con = psycopg2.connect(db_url)
     return con
 
+
 def db_refresh(conn=None):
     if not conn:
-        #create a connection if it doresn't exist
+        # create a connection if it doresn't exist
         conn = db_con()
     cur = conn.cursor()
     queries = drop_table_queries() + table_queries()
@@ -22,6 +23,7 @@ def db_refresh(conn=None):
         cur.execute(query)
         conn.commit()
     conn.close()
+
 
 def table_queries():
 
@@ -50,7 +52,8 @@ def table_queries():
 
     offices_table = """
     DROP TYPE IF EXISTS officeType;
-    CREATE TYPE officeType AS ENUM('federal', 'legislative', 'state', 'local government');
+    CREATE TYPE officeType AS ENUM('federal', 'legislative', 'state',
+                                   'local government');
     CREATE TABLE offices(
         id SERIAL PRIMARY KEY NOT NULL,
         type officeType NOT NULL,
@@ -75,15 +78,19 @@ def table_queries():
         PRIMARY KEY(voter, office)
     )
     """
-    return [users_table, parties_table, offices_table, candidates_table, votes_table]
+    return [users_table, parties_table, offices_table,
+            candidates_table, votes_table]
+
 
 def admin_query():
     password = generate_password_hash('not-sure')
     query = """
-    INSERT INTO users(firstname, lastname, phoneNumber, email, password, isAdmin)
+    INSERT INTO users(firstname, lastname, phoneNumber,
+                      email, password, isAdmin)
         VALUES('John', 'Doe', 0700222333, 'admin@localhost.com', {}, True)
     """.format(password)
     return query
+
 
 def drop_table_queries():
     drop_users = """
@@ -101,7 +108,8 @@ def drop_table_queries():
     drop_votes = """
     DROP TABLE IF EXISTS votes
     """
-    return [drop_users, drop_parties, drop_offices, drop_candidates, drop_votes]
+    return [drop_users, drop_parties, drop_offices,
+            drop_candidates, drop_votes]
 
 if __name__ == '__main__':
     try:

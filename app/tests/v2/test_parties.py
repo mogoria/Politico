@@ -5,7 +5,8 @@ from . import BaseTestModel
 class TestPartyModel(BaseTestModel):
     def setUp(self):
         super().setUp()
-        self.invalid_party_data = dict(name="Governor", logourl="logo.com/2", hqaddress="Kisumu")
+        self.invalid_party_data = dict(name="Governor", logourl="logo.com/2",
+                                       hqaddress="Kisumu")
 
     def test_create_party(self):
         new_party = self.create_party(self.party_data)

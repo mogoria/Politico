@@ -1,11 +1,9 @@
-#postgres://postgres:1A2S3D@localhost:5432/andela_test
+# postgres://postgres:1A2S3D@localhost:5432/andela_test
 from . import BaseTestModel
 from app.api.v2.models.user_model import User
 
 
 class TestUserModel(BaseTestModel):
-    def setUp(self):
-        super().setUp()
 
     def test_insert_to_db(self):
         user = User(** self.user_data)

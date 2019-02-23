@@ -36,6 +36,6 @@ class TestOfficeModel(BaseTestModel):
     def test_get_office_id_from_name(self):
         office = Office(** self.office_data)
         office.add_office()
-        
-        office_id = Office.get_office_id_from_name(self.office_data.get('name'))
-        self.assertEqual(office_id, 1)
+
+        off_id = Office.get_office_id_from_name(self.office_data.get('name'))
+        self.assertEqual(off_id, 1)

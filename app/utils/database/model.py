@@ -1,8 +1,9 @@
 from psycopg2.extras import RealDictCursor
 from . import init_db
 
+
 class Model:
-    conn=init_db.db_con()
+    conn = init_db.db_con()
 
     def __init__(self):
         if self.conn_closed():
@@ -17,7 +18,7 @@ class Model:
     @classmethod
     def insert(cls, table_name, columns, values):
         if len(columns) != len(values):
-            #input doesnt match
+            # input doesnt match
             raise Exception("Columns and Values don't match")
 
         cur = cls.conn.cursor()
@@ -25,10 +26,10 @@ class Model:
                     .format(
                         table_name,
                         ",".join(columns),
-                        #add quotes to string values
+                        # add quotes to string values
                         ",".join(["'{}'".format(value) if isinstance(value, str) else str(value) for value in values])
+                        )
                     )
-                )
         cls.conn.commit()
 
     @classmethod
@@ -46,11 +47,13 @@ class Model:
 
     @classmethod
     def select_one(cls, table_name, columns=None, criteria=None):
-        return cls.fetch(cls.select_query(table_name, columns, criteria), mode='one')
+        return cls.fetch(cls.select_query(table_name,
+                                          columns, criteria), mode='one')
 
     @classmethod
     def cursor(cls):
         return cls.conn.cursor(cursor_factory=RealDictCursor)
+
     @classmethod
     def close(cls):
         cls.conn.close()
