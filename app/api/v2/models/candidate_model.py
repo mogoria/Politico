@@ -37,6 +37,7 @@ class Candidate(Model):
 
     @classmethod
     def get_candidate_by_id(cls, cand_id):
+        criteria = dict(column='candidate', value=cand_id)
         cand = cls.select_one(table_name=cls.table_name, columns=cls.columns,
-                              criteria='candidate={}'.format(cand_id))
+                              criteria=criteria)
         return cand

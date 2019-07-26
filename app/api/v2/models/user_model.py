@@ -26,13 +26,13 @@ class User(Model):
     @classmethod
     def get_user_by_email(cls, email):
         user = cls.select_one(table_name=cls.table_name,
-                              criteria="email='{}'".format(email))
+                              criteria={'column': 'email', 'value': email})
         return user
 
     @classmethod
     def get_user_id_from_email(cls, email):
         user_id = cls.select_one(table_name=cls.table_name, columns=['id'],
-                                 criteria="email='{}'".format(email))
+                                 criteria={'column': 'email', 'value': email})
         return user_id.get('id')
 
     def add_user(self):

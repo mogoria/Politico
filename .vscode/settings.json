@@ -1,15 +1,15 @@
 {
-    "python.pythonPath": "env\\Scripts\\python.exe",
+    "python.pythonPath": "venv/bin/python",
     "python.linting.pylintEnabled": true,
     "python.linting.pep8Enabled": true,
     "python.linting.enabled": true,
     "python.formatting.provider": "black",
-    "python.unitTest.pyTestArgs": [
+    "python.testing.pytestArgs": [
         "app"
     ],
-    "python.unitTest.unittestEnabled": false,
-    "python.unitTest.nosetestsEnabled": false,
-    "python.unitTest.pyTestEnabled": true,
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true,
     "sqltools.connections": [
         {
             "askForPassword": false,
