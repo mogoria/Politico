@@ -5,25 +5,22 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install coveralls
+services:
+  - postgresql
 addons:
   postgresql: '10'
   apt:
     packages:
     - postgresql-10
     - postgresql-client-10
-    - oracle-java8-set-default
 env:
   global:
   - PGPORT=5432
 before_script:
-  - sudo sed -i 's/port = 5433/port = 5432/' /etc/postgresql/10/main/postgresql.conf
-  - sudo cp /etc/postgresql/{9.4,10}/main/pg_hba.conf
-  - sudo service postgresql restart
-  - psql -c "CREATE DATABASE andela_test;" -U postgres
-  - psql -c "CREATE USER tukmogi WITH PASSWORD 'jwt**2';" -U postgres
+  - psql -c "CREATE DATABASE politico_test_db;" -U postgres
+  - psql -c "CREATE USER politico WITH PASSWORD 'asd123';" -U postgres
 env:
-  - DB_URL="postgres://tukmogi:jwt**2@localhost/andela_test"
+  - DB_URL="postgres://politico:asd123@localhost/politico_test_db"
 # command to run tests
 script:
   - python -m pytest --cov=app app/tests/
