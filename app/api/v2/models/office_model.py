@@ -1,4 +1,6 @@
 from app.utils.database.model import Model
+
+
 class Office(Model):
     table_name = "offices"
     columns = ('name', 'type')
@@ -11,17 +13,20 @@ class Office(Model):
 
     @classmethod
     def get_all_offices(cls):
-        offices = cls.select_all(table_name=cls.table_name, columns=cls.columns)
+        offices = cls.select_all(table_name=cls.table_name,
+                                 columns=cls.columns)
         return offices
 
     @classmethod
     def get_office_by_name(cls, name):
-        office = cls.select_one(table_name=cls.table_name, criteria="name='{}'".format(name))
+        criteria = dict(column='name', value=name)
+        office = cls.select_one(table_name=cls.table_name, criteria=criteria)
         return office
 
     @classmethod
     def get_office_id_from_name(cls, name):
-        office_id = cls.select_one(table_name=cls.table_name, columns=['id'], criteria="name='{}'".format(name))
+        office_id = cls.select_one(table_name=cls.table_name, columns=['id'],
+                                   criteria={'column': 'name', 'value': name})
         return office_id.get('id')
 
     def add_office(self):

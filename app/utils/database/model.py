@@ -1,4 +1,5 @@
 from psycopg2.extras import RealDictCursor
+from psycopg2.sql import Identifier, Placeholder, SQL
 from . import init_db
 
 
@@ -10,10 +11,15 @@ class Model:
             Model.conn = init_db.db_con()
 
     @classmethod
-    def fetch(cls, query, mode='all'):
+    def fetch(cls, query, mode='all', arglist=None):
         cursor = cls.cursor()
-        cursor.execute(query)
-        return cursor.fetchall() if mode == 'all' else cursor.fetchone()
+        if arglist:
+            cursor.execute(query, arglist)
+        else:
+            cursor.execute(query)
+        result = cursor.fetchall() if mode == 'all' else cursor.fetchone()
+        cursor.close()
+        return result
 
     @classmethod
     def insert(cls, table_name, columns, values):
@@ -22,33 +28,42 @@ class Model:
             raise Exception("Columns and Values don't match")
 
         cur = cls.conn.cursor()
-        cur.execute("INSERT INTO {} ({}) VALUES({})"
-                    .format(
-                        table_name,
-                        ",".join(columns),
-                        # add quotes to string values
-                        ",".join(["'{}'".format(value) if isinstance(value, str) else str(value) for value in values])
+        query = SQL("INSERT INTO {} ({}) VALUES({})").format(
+                        Identifier(table_name),
+                        SQL(', ').join(map(Identifier, columns)),
+                        SQL(', ').join(Placeholder() * len(columns))
                         )
-                    )
+        cur.execute(query, values)
+        cur.close()
         cls.conn.commit()
 
     @classmethod
     def select_query(cls, table_name, columns=None, criteria=None):
-        join_type = ", ".join(columns) if columns else '*'
-        query = 'SELECT {} FROM {}'.format(join_type, table_name)
-        if criteria:
-            query = "{} WHERE {}".format(query, criteria)
+        query = QueryBuilder(table_name, columns).query()
 
+        if criteria:
+            query = QueryBuilder(table_name, columns).like(
+                        criteria.get('column'))
+        print(query.as_string(cls.conn))
         return query
 
     @classmethod
     def select_all(cls, table_name, columns=None, criteria=None):
-        return cls.fetch(cls.select_query(table_name, columns, criteria))
+        arglist = None
+        if criteria:
+            arglist = (criteria.get('value'),)
+        return cls.fetch(cls.select_query(table_name, columns, criteria),
+                         arglist=arglist)
 
     @classmethod
     def select_one(cls, table_name, columns=None, criteria=None):
-        return cls.fetch(cls.select_query(table_name,
-                                          columns, criteria), mode='one')
+        arglist = None
+        if criteria:
+            arglist = (criteria.get('value'),)
+        print(arglist)
+        return cls.fetch(cls.select_query(table_name, columns, criteria),
+                         mode='one',
+                         arglist=arglist)
 
     @classmethod
     def cursor(cls):
@@ -61,3 +76,28 @@ class Model:
     @classmethod
     def conn_closed(cls):
         return bool(cls.conn)
+
+
+class QueryBuilder:
+    def __init__(self, table, columns=None):
+        self.table = table
+        self.columns = columns
+
+    def like(self, column):
+        query = self.query() + SQL(" WHERE {} = {}").format(
+                    Identifier(column),
+                    Placeholder()
+                )
+        return query
+
+    def query(self):
+        if self.columns:
+            query = SQL("SELECT {} FROM {}").format(
+                    SQL(', ').join(
+                        map(Identifier, self.columns)
+                        ),
+                    Identifier(self.table))
+        else:
+            query = SQL("SELECT * FROM {}").format(
+                    Identifier(self.table))
+        return query

@@ -1,6 +1,7 @@
 import os
 from werkzeug.security import generate_password_hash
 import psycopg2
+from .util import LoggingCursor
 
 
 def db_con(db_url=None):
@@ -16,7 +17,7 @@ def db_refresh(conn=None):
     if not conn:
         # create a connection if it doresn't exist
         conn = db_con()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=LoggingCursor)
     queries = drop_table_queries() + table_queries()
 
     for query in queries:
