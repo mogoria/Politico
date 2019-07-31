@@ -7,7 +7,9 @@ from .util import LoggingCursor
 def db_con(db_url=None):
 
     if not db_url:
-        db_url = os.getenv('DB_URL')
+        db_url = os.getenv('TEST_DB_URL'  # Development db
+                           if os.getenv('FLASK_ENV') == 'development'
+                           else 'DB_URL')
         print(db_url)
     con = psycopg2.connect(db_url)
     return con
