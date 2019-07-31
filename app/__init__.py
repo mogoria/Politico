@@ -5,6 +5,7 @@ from instance.config import app_config
 from app.api.v1.views import v1_bp
 from app.api.v1.views.political_party_route import v1_bp as party_bp
 from app.api.v1.views.political_office_route import v1_bp as office_bp
+from app.api.v2.views.user import v2_bp as user_bp
 from app.utils.helper import handle_bad_request, handle_not_found
 
 
@@ -19,5 +20,6 @@ def create_app(config_name='development'):
     flask_app.register_blueprint(v1_bp)
     flask_app.register_blueprint(party_bp)
     flask_app.register_blueprint(office_bp)
+    flask_app.register_blueprint(user_bp)
 
     return flask_app
