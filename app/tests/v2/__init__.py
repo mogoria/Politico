@@ -21,6 +21,8 @@ class BaseTest(unittest.TestCase):
 class BaseTestModel(unittest.TestCase):
     def setUp(self):
         init_db.db_refresh()
+        if Model.conn_closed():
+            Model.open()
         self.password = generate_password_hash("pass123")
         self.user_data = dict(firstname='Tukmen', lastname='Mogoria',
                               othername='Asianut', email='tukmogi@gmail.com',

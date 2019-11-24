@@ -9,6 +9,7 @@ from app.api.v1.models.political_party_model import Parties
 class BaseTest(unittest.TestCase):
     "base class for test"
     path = "/api/v1"
+
     def setUp(self):
         """configures the settings to be used to test"""
         self.app = create_app(config_name='testing')
@@ -20,7 +21,8 @@ class BaseTest(unittest.TestCase):
     def post(self, data):
         """returns response from a post request"""
         return self.client.post(path=self.path,
-                                data=json.dumps(data), content_type="application/json")
+                                data=json.dumps(data),
+                                content_type="application/json")
 
     def get(self):
         """returns response from a get request"""

@@ -8,15 +8,18 @@ class Model:
 
     def __init__(self):
         if self.conn_closed():
-            Model.conn = init_db.db_con()
+            self.open()
 
     @classmethod
     def fetch(cls, query, mode='all', arglist=None):
         cursor = cls.cursor()
-        if arglist:
-            cursor.execute(query, arglist)
-        else:
-            cursor.execute(query)
+        try:
+            if arglist:
+                cursor.execute(query, arglist)
+            else:
+                cursor.execute(query)
+        except Exception as e:
+            print(e)
         result = cursor.fetchall() if mode == 'all' else cursor.fetchone()
         cursor.close()
         return result
@@ -44,7 +47,10 @@ class Model:
         if criteria:
             query = QueryBuilder(table_name, columns).like(
                         criteria.get('column'))
-        print(query.as_string(cls.conn))
+        try:
+            print(query.as_string(cls.conn))
+        except Exception as e:
+            print("Error occured: {}".format(e))
         return query
 
     @classmethod
@@ -72,6 +78,10 @@ class Model:
     @classmethod
     def close(cls):
         cls.conn.close()
+
+    @classmethod
+    def open(cls):
+        Model.conn = init_db.db_con()
 
     @classmethod
     def conn_closed(cls):
