@@ -44,7 +44,7 @@ def get_all_offices():
     role = "offices"
     offices = OFFICE.get_all_offices()
     if offices:
-        #remove starting underscores in keys for offices
+        # remove starting underscores in keys for offices
         offices = [utils.desanitise(office) for office in offices]
         return utils.util_response(200, offices, role)
     return utils.util_response(404, "offices not found", role)

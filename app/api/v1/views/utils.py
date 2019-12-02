@@ -1,23 +1,17 @@
 """contains helper functions to routes"""
 from flask import make_response
 from flask import jsonify
-def wrap_response(status_code, data, role):
-    """wraps response according to api specification"""
-    if 200 <= status_code < 300:
-        return {
-            "status":status_code,
-            role:data if isinstance(data, list) else [data]
-        }
-    return {
-        "status":status_code,
-        "error":data
-    }
+from app.utils.helper import format_field_display, util_response
 
-def util_response(status_code, data, role):
-    """wraps response in a make_response block"""
-    return make_response(
-        jsonify(wrap_response(status_code, data, role)), status_code
-    )
+
+def get_all(items, role):
+    """endpoint to make a get request for offices"""
+    if items:
+        # remove starting underscores in keys
+        items = [desanitise(item) for item in items]
+        return util_response(200, items, role)
+    return util_response(404, role + " not found", role)
+
 
 def check_fields(request, required_fields):
     """decorator to validate required fields"""
@@ -26,25 +20,25 @@ def check_fields(request, required_fields):
             data = request.get_json()
             message = ""
             if data:
-                #get the fields provided int the request
+                # get the fields provided int the request
                 provided_fields = list(data.keys())
-                #check if provided fields match required fields
+                # check if provided fields match required fields
                 if sorted(provided_fields) == sorted(required_fields):
                     return func(*args, **kwargs)
 
                 missing_fields = []
-                #get missing required fields
+                # get missing required fields
                 for field in required_fields:
                     if field not in provided_fields:
                         missing_fields.append(field)
 
                 if missing_fields:
                     message = "Please provide valid fields for: {}"\
-                            .format(display_error_fields(missing_fields))
-                #the request contains extra fields
+                        .format(format_field_display(missing_fields))
+                # the request contains extra fields
                 else:
                     message = "Only the following fields are required: {}"\
-                            .format(display_error_fields(required_fields))
+                        .format(format_field_display(required_fields))
             else:
                 message = "Please enter a valid json request"
 
@@ -54,15 +48,6 @@ def check_fields(request, required_fields):
         return wrapped_f
     return wrap
 
-def display_error_fields(fields):
-    """format the display of missing fields"""
-    num_fields = len(fields)
-    if num_fields == 1:
-        return fields[0]
-    if num_fields == 2:
-        return "{} and {}".format(fields[-2], fields[-1])
-    #field length greater than 2
-    return "{} and {}".format(",".join(fields[:-1]), fields[-1])
 
 def sanitise(dic):
     """Adds underscores to keys in dictionary"""
@@ -71,13 +56,15 @@ def sanitise(dic):
         new_dic["_{}".format(key)] = value
     return new_dic
 
+
 def desanitise(dic):
     """Removes underscores from dictionary"""
     new_dic = dict()
     for key, value in dic.items():
-        #omit the underscore from the key name
+        # omit the underscore from the key name
         new_dic[key[1:]] = value
     return new_dic
+
 
 class Validator:
     office_types = ["federal", "legislative", "state", "local government"]
@@ -90,6 +77,7 @@ class Validator:
         if office in self.office_types:
             return True
         return False
+
     @classmethod
     def is_null(cls, value):
         """checks if a value is null"""
@@ -103,12 +91,13 @@ class Validator:
         return is_url
 
     def is_str(self, value):
-        """Returns True if value isn't a number and contains letters and spaces but not null"""
-        #confirm that value is not null and not an integer
+        """Returns True if value isn't a number and contains letters
+         and spaces but not null"""
+        # confirm that value is not null and not an integer
         if self.is_int(value) or self.is_null(value):
             return False
         for char in value:
-            #only accept spaces and alphabets
+            # only accept spaces and alphabets
             if not (char.isalpha() or char == " "):
                 return False
         return True
@@ -129,14 +118,17 @@ class Validator:
         return self.errors
 
     def mass_check_type(self, type_list, values):
-        """Checks a dictionary of values to see whether they are of the type provided in typelist"""
+        """Checks a dictionary of values to see whether they are of 
+        the type provided in typelist"""
         for key, value in type_list.items():
             if not value(values.get(key)):
                 self.errors.append("Please enter a valid {}".format(key))
         return self.errors
 
+
 class OfficeValidator(Validator):
     """validates office input"""
+
     def __init__(self, type, name):
         super().__init__()
         self.type = type
@@ -157,13 +149,14 @@ class OfficeValidator(Validator):
         if self.mass_check_type(type_list, values):
             return self.errors
         if not self.check_office_type(self.type):
-            return "Please enter a valid type either: {}".format(", ".join(self.office_types))
+            return "Please enter a valid type either: {}"\
+                .format(", ".join(self.office_types))
         return []
-
 
 
 class PartyValidator(Validator):
     """Validates party fields"""
+
     def __init__(self, name, hqAddress, logoUrl):
         super().__init__()
         self.name = name

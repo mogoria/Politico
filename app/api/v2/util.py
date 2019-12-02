@@ -1,43 +1,9 @@
-"""
-Required user fields:
-=> 'firstname'
-=> 'lastname'
-=> 'othername'
-=> 'email'
-=> 'phonenumber'
-=> 'passporturi'
-=> 'password'
-=> 'isadmin'
-"""
 import re
 from flask import jsonify, make_response
+from app.utils.helper import wrap_response, format_field_display
 
 USER_FIELDS = ('firstname', 'lastname', 'othername', 'email',
                'phonenumber', 'passporturi', 'password', 'isadmin')
-
-
-def wrap_response(status_code, data, role):
-    """wraps response according to api specification"""
-    if 200 <= status_code < 300:
-        return {
-            "status": status_code,
-            role: data if isinstance(data, list) else [data]
-        }
-    return {
-        "status": status_code,
-        "error": data
-    }
-
-
-def format_field_display(fields):
-    """format the display of missing fields"""
-    num_fields = len(fields)
-    if num_fields == 1:
-        return fields[0]
-    if num_fields == 2:
-        return "{} and {}".format(fields[-2], fields[-1])
-    # field length greater than 2
-    return "{} and {}".format(", ".join(fields[:-1]), fields[-1])
 
 
 def util_response(status_code, data, role):
@@ -119,7 +85,7 @@ def valid_email(email):
 
 
 def valid_phone(phone):
-    return re.match(r'(2547|07|\+2547)[0-9]{8}', phone)
+    return re.match(r'(0|\+254)7[0-9]{8}', phone)
 
 
 def valid_password(password):
